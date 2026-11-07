@@ -1,0 +1,56 @@
+name: 分享社区作品
+description: 填写说明、上传图片和作品链接，无需建立代码仓库。
+title: "[作品分享] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        MakerWorld、GitHub 等平台的作品都可以分享。填写后由维护者审核收录，不需要下载代码或安装软件。
+  - type: input
+    id: project-name
+    attributes:
+      label: 项目名称
+      placeholder: 你的作品名称
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: 所属板块
+      options:
+        - 结构
+        - 整机固件
+        - 动作模型
+        - 音视频交互
+    validations:
+      required: true
+  - type: input
+    id: project-url
+    attributes:
+      label: 作品链接
+      description: 直接粘贴 MakerWorld、GitHub 或其他平台的作品页面链接。
+      placeholder: https://makerworld.com/...
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: 项目说明
+      placeholder: 简单介绍做了什么、如何使用。
+    validations:
+      required: true
+  - type: textarea
+    id: images
+    attributes:
+      label: 图片
+      description: 把图片拖到这个框里上传，或粘贴图片链接。推荐提供一张封面图。
+    validations:
+      required: false
+  - type: input
+    id: video
+    attributes:
+      label: 视频链接
+      description: 可选，粘贴 B 站、YouTube 等视频链接。
+      placeholder: 没有视频可以留空
+    validations:
+      required: false

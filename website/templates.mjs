@@ -80,45 +80,49 @@ function thumbnail(project, prefix = './') {
   return project.image ? `<img src="${escape(project.image.startsWith('https://') ? project.image : prefix + project.image)}" alt="${escape(project.image_alt)}" loading="lazy" width="520" height="360" referrerpolicy="no-referrer">` : projectArt(project.category);
 }
 
+function platformName(url) {
+  const host = new URL(url).hostname;
+  if (host === 'makerworld.com' || host.endsWith('.makerworld.com')) return 'MakerWorld';
+  if (host === 'github.com') return 'GitHub';
+  return host;
+}
+
 function projectCard(project, demo) {
   const category = categoryFor(project);
-  const search = [project.name, project.summary, project.author.name, category.label, ...(project.tags ?? []), ...project.compatibility.hardware, project.compatibility.firmware].join(' ');
-  return `<article class="project-card" data-project data-category="${project.category}" data-search="${escape(search.toLowerCase())}" data-hardware="${escape(JSON.stringify(project.compatibility.hardware))}" data-updated="${project.updated}" data-name="${escape(project.name)}">
-    <a class="project-cover cover-${project.category}" href="./projects/${project.slug}/" aria-label="查看 ${escape(project.name)} 的详情">${thumbnail(project)}${demo ? '<span class="demo-tag">演示项目</span>' : ''}</a>
-    <div class="project-body"><div class="project-category">${category.label}</div><h3><a href="./projects/${project.slug}/">${escape(project.name)}</a></h3><p class="project-summary">${escape(project.summary)}</p>
-    <div class="project-meta"><span>${escape(project.author.name)}</span>${demo ? `<a href="./projects/${project.slug}/">查看详情 ${icon('external')}</a>` : ext(project.repository, '项目仓库')}</div></div></article>`;
+  const projectPath = './projects/' + encodeURIComponent(project.slug) + '/';
+  const search = [project.name, project.description, project.author?.name ?? '', category.label, platformName(project.repository)].join(' ');
+  return `<article class="project-card" data-project data-category="${project.category}" data-search="${escape(search.toLowerCase())}">
+    <a class="project-cover" href="${projectPath}" aria-label="查看 ${escape(project.name)} 的详情">${thumbnail(project)}${demo ? '<span class="demo-tag">演示项目</span>' : ''}</a>
+    <div class="project-body"><div class="project-category">${category.label}</div><h3><a href="${projectPath}">${escape(project.name)}</a></h3><p class="project-summary">${escape(project.summary)}</p>
+    <div class="project-meta"><span>${escape(project.author?.name ?? platformName(project.repository))}</span>${demo ? `<a href="${projectPath}">查看详情 ${icon('external')}</a>` : ext(project.repository, '查看作品')}</div></div></article>`;
 }
 
 export function home(config, projects, demo = false) {
-  const hardware = [...new Set(projects.flatMap(p => p.compatibility.hardware))].sort();
-  const content = `<section class="directory-intro container"><div><p class="eyebrow">XGO-DUCK COMMUNITY</p><h1><span class="marker">社区作品</span></h1></div><div class="intro-action"><p>通过 PR 分享你的项目。</p><a class="button button-primary" href="./contribute/">提交项目 ${icon('external')}</a></div></section>
+  const content = `<section class="directory-intro container"><div><p class="eyebrow">XGO-DUCK COMMUNITY</p><h1><span class="marker">社区作品</span></h1></div><div class="intro-action"><p>分享 MakerWorld、GitHub 等平台的作品。</p><a class="button button-primary" href="./contribute/">提交作品 ${icon('external')}</a></div></section>
   <section id="explore" class="directory-surface" aria-labelledby="projects-heading"><div class="explore container"><div class="section-heading"><h2 id="projects-heading">项目目录 <span class="count-label" data-count>${String(projects.length).padStart(2, '0')}</span></h2></div>
   <div class="explore-controls" data-enhanced hidden><div class="filter-row" role="group" aria-label="按项目类别筛选"><button class="filter active" data-category-filter="all" aria-pressed="true">全部</button>${CATEGORIES.map(c => `<button class="filter" data-category-filter="${c.id}" aria-pressed="false">${c.label}</button>`).join('')}</div>
-  <div class="search-row"><div class="search-input">${icon('search')}<label class="sr-only" for="search">搜索项目、作者、关键词</label><input id="search" type="search" placeholder="搜索作品、作者、关键词…" autocomplete="off" maxlength="150"><kbd>/</kbd></div><label class="select-field"><span class="sr-only">硬件兼容性</span><select id="hardware"><option value="all">所有硬件</option>${hardware.map(h => `<option value="${escape(h)}">${escape(h)}</option>`).join('')}</select></label><label class="select-field"><span class="sr-only">排序方式</span><select id="sort"><option value="updated">最近更新</option><option value="name">名称 A—Z</option></select></label></div></div>
+  <div class="search-row"><div class="search-input">${icon('search')}<label class="sr-only" for="search">搜索作品、作者、关键词</label><input id="search" type="search" placeholder="搜索作品、作者、关键词…" autocomplete="off" maxlength="150"><kbd>/</kbd></div></div></div>
   <p class="sr-only" role="status" aria-live="polite" data-results>${projects.length} 个项目</p>
   <div class="project-grid" data-grid>${projects.map(p => projectCard(p, demo)).join('')}</div>
-  <div class="empty-state" data-empty ${projects.length ? 'hidden' : ''}><h3 data-empty-title>暂无项目</h3><p data-empty-description>通过 Pull Request 提交你的项目。</p><a class="button button-primary" href="./contribute/">提交项目 ${icon('external')}</a><button class="text-link" type="button" data-reset hidden>清除筛选 ${icon('back')}</button></div></div></section>`;
+  <div class="empty-state" data-empty ${projects.length ? 'hidden' : ''}><h3 data-empty-title>暂无作品</h3><p data-empty-description>提交介绍、图片和作品链接即可。</p><a class="button button-primary" href="./contribute/">提交作品 ${icon('external')}</a><button class="text-link" type="button" data-reset hidden>清除筛选 ${icon('back')}</button></div></div></section>`;
   return shell({ config, content, demo });
 }
 
 export function detail(config, project, demo = false) {
   const prefix = '../../';
   const category = categoryFor(project);
-  const content = `<div class="container detail"><a class="back-link" href="../../#explore">${icon('back')} 返回项目</a><div class="detail-layout"><div class="detail-main"><div class="project-category">${category.label}${demo ? '<span class="demo-tag-inline">虚构示例</span>' : ''}</div><h1>${escape(project.name)}</h1><p class="detail-summary">${escape(project.summary)}</p><div class="detail-author">${demo ? escape(project.author.name) : ext(project.author.url, escape(project.author.name))}<span>更新于 ${project.updated}</span></div><div class="detail-cover cover-${project.category}">${thumbnail(project, prefix)}</div><section class="prose"><h2>项目介绍</h2>${paragraphs(project.description)}</section>${project.video ? `<section class="video-section"><h2>演示视频</h2>${ext(project.video, icon('play') + '观看演示', 'button button-light')}</section>` : ''}${project.gallery?.length ? `<section><h2>项目图集</h2><div class="gallery">${project.gallery.map(item => `<figure><img src="${escape(item.image.startsWith('https://') ? item.image : prefix + item.image)}" alt="${escape(item.alt)}" loading="lazy" referrerpolicy="no-referrer"><figcaption>${escape(item.alt)}</figcaption></figure>`).join('')}</div></section>` : ''}<section class="installation"><h2>安装与使用</h2><ol>${project.installation.map(step => `<li>${escape(step)}</li>`).join('')}</ol>${project.documentation ? ext(project.documentation, '完整文档', 'text-link') : ''}</section></div><aside class="detail-aside"><div class="aside-card"><h2>项目链接</h2>${demo ? '<span class="button button-disabled" aria-disabled="true">示例 · 无实际仓库</span>' : ext(project.repository, '访问项目仓库', 'button button-primary')}${project.issues ? ext(project.issues, '反馈问题', 'text-link') : ''}</div><div class="compatibility"><h2>兼容性</h2><dl><dt>硬件</dt><dd>${project.compatibility.hardware.map(h => `<span class="tag">${escape(h)}</span>`).join('')}</dd><dt>固件 / 软件</dt><dd>${escape(project.compatibility.firmware)}</dd><dt>使用说明</dt><dd>${escape(project.compatibility.notes)}</dd><dt>许可证</dt><dd>${escape(project.license ?? '以原项目声明为准')}</dd></dl></div><div class="detail-tags">${(project.tags ?? []).map(t => `<span class="tag">${escape(t)}</span>`).join('')}</div></aside></div></div>`;
-  return shell({ config, content, title: project.name, description: project.summary, prefix, demo, canonicalPath: `projects/${project.slug}/` });
+  const content = `<div class="container detail"><a class="back-link" href="../../#explore">${icon('back')} 返回作品</a><div class="detail-layout"><div class="detail-main"><div class="project-category">${category.label}${demo ? '<span class="demo-tag-inline">虚构示例</span>' : ''}</div><h1>${escape(project.name)}</h1>${project.author ? `<p class="project-credit">作者：${escape(project.author.name)}</p>` : ''}<div class="prose">${paragraphs(project.description)}</div><div class="detail-cover">${thumbnail(project, prefix)}</div>${project.gallery?.length ? `<section><h2>项目图片</h2><div class="gallery">${project.gallery.map(item => `<figure><img src="${escape(item.image)}" alt="${escape(item.alt)}" loading="lazy" referrerpolicy="no-referrer"></figure>`).join('')}</div></section>` : ''}${project.video ? `<section class="video-section"><h2>演示视频</h2>${ext(project.video, icon('play') + '观看视频', 'button button-light')}</section>` : ''}</div><aside class="detail-aside"><div class="aside-card"><h2>原作品</h2>${demo ? '<span class="button button-disabled" aria-disabled="true">示例 · 无实际作品链接</span>' : ext(project.repository, '查看原作品', 'button button-primary')}</div></aside></div></div>`;
+  return shell({ config, content, title: project.name, description: project.summary, prefix, demo, canonicalPath: 'projects/' + encodeURIComponent(project.slug) + '/' });
 }
 
-export function contribute(config, template, demo = false, prTemplate = '') {
-  const repo = `https://github.com/${config.repository}`;
-  const templateBlock = (id, label, content) => `<div class="code-block"><div class="code-heading"><span>${label}</span><button type="button" data-copy="${id}" aria-label="复制 ${label}">${icon('copy')}<span aria-live="polite">复制模板</span></button></div><pre><code id="${id}" data-template>${escape(content)}</code></pre></div>`;
-  const content = `<div class="container guide"><a class="back-link" href="../#explore">${icon('back')} 返回项目</a><div class="guide-heading"><p class="eyebrow">CONTRIBUTE</p><h1><span class="marker">提交项目</span></h1><p>项目保留在你的仓库，通过 PR 加入社区目录。</p></div><div class="guide-layout"><div>
-  <section class="guide-step"><span class="step-number">01</span><div><h2>填写项目资料</h2><p>Fork 社区仓库，将 YAML 模板保存为 <code>projects/your-project.yaml</code>。选择结构、整机固件、动作模型或音视频交互中的一个板块。</p><p>展示图片放入 <code>website/public/assets/projects/</code>。</p><details class="template-details"><summary>项目 YAML 模板</summary>${templateBlock('project-template', 'YAML 模板', template)}</details><div class="template-actions">${ext(`${repo}/fork`, 'Fork 社区仓库', 'text-link')}<a class="text-link" href="../templates/project-template.yaml" download>下载 YAML 模板 ${icon('arrow')}</a></div></div></section>
-  <section class="guide-step"><span class="step-number">02</span><div><h2>本地校验</h2><pre class="command-block"><code>npm ci
-npm run check
-npm run check:links</code></pre><p>检查通过后，将 YAML 和展示图片提交到你的 Fork。</p></div></section>
-  <section class="guide-step"><span class="step-number">03</span><div><h2>提交 Pull Request</h2><p>使用下面的 PR 正文模板。审核合并后，目录自动更新。</p>${templateBlock('pr-template', 'PR 模板', prTemplate)}<div class="template-actions">${ext(`${repo}/compare`, '创建 Pull Request', 'button button-primary')}<a class="text-link" href="../templates/pull-request-template.md" download>下载 PR 模板 ${icon('arrow')}</a></div></div></section>
-  </div><aside class="guide-aside"><div class="aside-card"><h2>收录要求</h2><ul class="requirements"><li>公开可访问的项目地址</li><li>明确的硬件与固件版本</li><li>项目介绍与安装步骤</li><li>有权使用的展示素材</li></ul>${ext(`${repo}/blob/${config.branch}/CONTRIBUTING.md`, '字段与图片规范', 'text-link')}</div><div class="guide-note"><h3>更新 / 下架</h3><p>提交 PR 修改或删除对应 YAML。项目文件和问题反馈由原仓库维护。</p></div></aside></div></div>`;
-  return shell({ config, content, title: '提交项目', prefix: '../', demo, canonicalPath: 'contribute/' });
+export function contribute(config, template, demo = false) {
+  const repo = 'https://github.com/' + config.repository;
+  const form = repo + '/issues/new?template=share-project.yml';
+  const content = `<div class="container guide"><a class="back-link" href="../#explore">${icon('back')} 返回作品</a><div class="guide-heading"><p class="eyebrow">SHARE YOUR PROJECT</p><h1><span class="marker">分享作品</span></h1><p>写介绍、放图片、贴链接即可。</p></div>
+  <section class="submission-start"><div class="submission-main"><h2>直接填表投稿</h2><p>MakerWorld、GitHub 或其他平台的作品都可以。登录 GitHub 后填写表单，由维护者审核收录。</p>${ext(form, '填写投稿表单', 'button button-primary')}</div><aside class="aside-card"><h2>准备这些资料</h2><ul class="requirements"><li>名称和所属板块</li><li>原作品链接</li><li>项目说明和图片</li><li>视频链接（可选）</li></ul></aside></section>
+  <section class="submission-template"><h2>简单投稿模板</h2><div class="code-block"><div class="code-heading"><span>项目说明</span><button type="button" data-copy="project-template" aria-label="复制投稿模板">${icon('copy')}<span aria-live="polite">复制模板</span></button></div><pre><code id="project-template" data-template>${escape(template)}</code></pre></div><a class="text-link" href="../templates/project-template.md" download>下载模板 ${icon('arrow')}</a>
+  <details class="template-details"><summary>也可以通过 PR 投稿</summary><div class="pr-instructions"><ol><li>在社区仓库中，网页新建 <code>projects/你的作品名.md</code>。</li><li>粘贴上面的模板，填好介绍、图片和链接。</li><li>按 GitHub 提示提交 Pull Request，合并后自动展示。</li></ol><p>GitHub 可能提示创建社区仓库的副本。只想分享作品，可以直接用上面的投稿表单。</p>${ext(repo + '/new/' + config.branch + '/projects', '网页新建介绍', 'button button-light')}</div></details></section></div>`;
+  return shell({ config, content, title: '分享作品', prefix: '../', demo, canonicalPath: 'contribute/' });
 }
 
 export function notFound(config, demo = false) {

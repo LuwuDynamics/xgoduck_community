@@ -1,47 +1,45 @@
 # 维护社区目录
 
-## 首次上线
+## 审核网页投稿
 
-本地文件夹已经具备完整源码与 GitHub 工作流；它本身不会创建远程仓库或启用 GitHub Pages。
+1. 打开原作品链接，确认与 XGO-Duck 相关、介绍和素材可用于展示。
+2. 审核通过后，复制 Issue 正文，在 `projects/` 新建一份 `作品名.md`。Issue 表单的标题格式与投稿文件相同，可以直接复制。
+3. 提交或合并该文件，网站自动更新。随后在原投稿中告知作者收录结果。
 
-1. 建立公开仓库 `LuwuDynamics/xgoduck_community`，以本目录为仓库根目录，默认分支使用 `main`。
-2. 检查 `site.config.json` 中组织、仓库名与最终网站 URL。
-3. 推送源码与 `package-lock.json`，不要上传 `node_modules/`、`dist/` 或 `dist-demo/`。
-4. 在 Settings → Pages 中将 Source 设为 GitHub Actions。
-5. 启用 Discussions，设置合适的讨论分类（例如项目交流、开发问答、想法）。
-6. 开启 `main` 的合并保护，将 `Validate projects / validate` 设为必需检查。
-7. 在 Actions 确认校验与部署完成，检查首页与贡献指南。
+收到 PR 时直接审核 Markdown 介绍与原作品即可。作者无需提供代码仓库、兼容性表格或本地构建结果；安装与适配信息以原作品页面为准。
 
-如尚未添加真实项目，正式网站会显示邀请首位贡献者的空目录。不要为了填满页面将演示 YAML 复制到 `projects/`。
+## 数据格式
 
-## 审核 PR
+每份 Markdown 使用六个三级标题：项目名称、所属板块、作品链接、项目说明、图片、视频链接。前四项必填，图片与视频可留空。可选添加「作者」三级标题署名。
 
-- 打开项目主页，确认是真实的 XGO-Duck 相关作品，作者身份或授权清晰。
-- 检查介绍、图片、许可证、安装步骤与已验证兼容范围；兼容性未知应明确写出。
-- 确认下载和问题反馈链接回到原作者的平台。
-- 浏览 CI 警告。403 / 429 或超时不代表链接失效，需人工打开复核；不存在的链接应修正。
-- 仅收录 YAML 与必要的展示图片。拒绝二进制固件包、大型模型、训练权重、整份源码与敏感信息。
-- YAML 被视为不可信输入：网站对文本转义，不执行条目中的 HTML、Markdown 或命令。贡献者的 SVG 不作为本地图片接受。
-- PR 使用只读校验工作流；不使用 `pull_request_target`，不向第三方链接发送 GitHub Token。链接检查解析公开 DNS 并验证每次重定向。
+四个板块：结构、整机固件、动作模型、音视频交互。项目文件名可以用中文或英文，也支持空格、数字、下划线和连字符，最多 80 字符。
 
-如果 PR 修改了工作流、构建脚本或依赖，应按代码变更单独审阅。纯条目 PR 通常只需要审阅 `projects/` 和 `website/public/assets/projects/`。
+图片可直接复制 GitHub 附件的 Markdown 或 HTML 标签，构建程序只读取其中的 HTTPS 图片链接，不执行 HTML。说明作为纯文本展示。不要放入私人信息、访问令牌、模型权重或固件包。
 
-## 合并与故障
+## 构建与部署
 
-合并到 `main` 后，Pages 工作流先校验、测试并构建 `dist/`，再通过独立部署 job 发布。部署权限只授予部署 job。演示目录不会上传。
+只有一份 GitHub 工作流：PR 自动检查，合并到 `main` 后自动部署。没有第三方构建依赖，不需要安装包。
 
-构建失败时上一版本的网站继续提供服务；修正 YAML、图片或构建错误后重新推送。首次部署失败时，先确认 Pages Source 已选择 GitHub Actions，仓库组织策略允许对应 Actions，并检查工作流日志。
+```sh
+node --test
+node scripts/build.mjs
+node scripts/check-build.mjs
+node scripts/check-links.mjs
+```
 
-外部链接检查在 `Validate projects` 工作流中执行。Pages 构建不依赖第三方服务器实时可达性，避免某个作者平台临时限流阻塞整个网站。通过分支保护确保 PR 的校验已经完成再合并。
+前两项验证说明格式并生成网站，第三项检查站内链接，最后一项检查原作品、图片与视频的外部链接。404 / 410 判失败，403 / 429、超时等结果提示人工复核。
 
-## 配置与扩展
+如需分支保护，将工作流的 `build` 检查设为必需。如果此前设置过已移除的 `validate` 检查，请改用 `build`。
 
-- 网站身份：`site.config.json`。更换仓库时，也修改 README、Issue 入口与工作流分支条件。
-- 数据规则：`schemas/project.schema.json` 和 `scripts/lib/catalog.mjs`。
-- 页面与样式：`website/templates.mjs` 与 `website/public/assets/`。
-- 分类：`CATEGORIES` 与 Schema 的枚举需同步修改。
-- 排序：默认按 `updated` 降序；页面支持名称排序、分类、关键词和硬件筛选，并将状态保存在 URL。
-- 资源路径：详情页两层相对路径、贡献指南一层相对路径；404 使用 `siteUrl` 的 Pages 前缀。
-- `projects.json` 是公开的构建产物，不应在项目 YAML 放入非公开联系方式或其他私密信息。
+GitHub Pages 的 Source 使用 GitHub Actions；部署目录为 `dist/`。`dist-demo/` 的四个虚构作品只供本地预览，不参与正式部署。构建失败时，上一次已部署的网站仍然可用。
 
-网站仅为公开项目索引，不需要后台数据库、账号系统、API Key 或安装服务。
+## 修改网站
+
+- 作品数据：`projects/*.md`。
+- 网站身份：`site.config.json`。
+- 页面：`website/templates.mjs`。
+- 样式与浏览器脚本：`website/public/assets/`。
+- 投稿表单：`.github/ISSUE_TEMPLATE/share-project.yml`。
+- 投稿与 PR 模板：`.github/pull_request_template.md`，网站复制和下载使用同一文件。
+
+配色参考 [XGORobot Duck 官网](https://www.xgorobot.com/duck.html)。本地查看：`node scripts/serve.mjs --build --watch`；演示加 `--demo`。

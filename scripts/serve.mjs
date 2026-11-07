@@ -29,7 +29,7 @@ async function rebuild() {
 }
 if (process.argv.includes('--build') && !await rebuild()) process.exit(1);
 try { await stat(path.join(output, 'index.html')); }
-catch { console.error('未找到构建产物，请先运行 npm run build（演示使用 npm run build:demo）。'); process.exit(1); }
+catch { console.error('请先运行 node scripts/build.mjs（演示加 --demo）。'); process.exit(1); }
 const outputReal = await realpath(output);
 const server = http.createServer(async (request, response) => {
   if (!['GET', 'HEAD'].includes(request.method)) { response.writeHead(405); response.end(); return; }
@@ -60,7 +60,7 @@ server.listen(port, '127.0.0.1', () => console.log(`Local: http://127.0.0.1:${po
 const watchers = [];
 let timer;
 if (process.argv.includes('--watch')) {
-  for (const directory of ['projects', 'website', 'examples', 'schemas', 'scripts']) {
+  for (const directory of ['projects', 'website', 'examples', '.github', 'scripts']) {
     watchers.push(watch(path.join(ROOT, directory), { recursive: true }, () => { clearTimeout(timer); timer = setTimeout(rebuild, 250); }));
   }
   watchers.push(watch(path.join(ROOT, 'site.config.json'), () => console.log('site.config.json 已更改，请重启预览以更新网站路径。')));

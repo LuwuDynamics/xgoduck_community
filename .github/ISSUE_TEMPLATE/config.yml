@@ -1,8 +1,5 @@
 blank_issues_enabled: true
 contact_links:
-  - name: 提交社区项目 / Submit a project
-    url: https://github.com/LuwuDynamics/xgoduck_community/blob/main/CONTRIBUTING.md
-    about: 通过 PR 提交一份 YAML，将项目加入目录。
   - name: 第三方项目问题 / Third-party support
     url: https://github.com/LuwuDynamics/xgoduck_community/blob/main/README.md#项目维护与责任边界
     about: 请到对应作者的项目仓库反馈问题。

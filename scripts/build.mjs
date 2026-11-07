@@ -7,8 +7,7 @@ import { home, detail, contribute, notFound } from '../website/templates.mjs';
 export async function build({ demo = false } = {}) {
   const config = await loadConfig();
   const projects = await loadProjects({ directory: demo ? 'examples/demo' : 'projects' });
-  const template = await readFile(path.join(ROOT, 'examples/project-template.yaml'), 'utf8');
-  const prTemplate = await readFile(path.join(ROOT, '.github/pull_request_template.md'), 'utf8');
+  const template = await readFile(path.join(ROOT, '.github/pull_request_template.md'), 'utf8');
   // Output paths are fixed and confined to the repository, including when called by dev.
   const output = path.join(ROOT, demo ? 'dist-demo' : 'dist');
   await rm(output, { force: true, recursive: true });
@@ -16,10 +15,9 @@ export async function build({ demo = false } = {}) {
   await cp(path.join(ROOT, 'website/public'), output, { recursive: true, filter: source => !source.endsWith('.gitkeep') });
   await mkdir(path.join(output, 'contribute'), { recursive: true });
   await writeFile(path.join(output, 'index.html'), home(config, projects, demo));
-  await writeFile(path.join(output, 'contribute/index.html'), contribute(config, template, demo, prTemplate));
+  await writeFile(path.join(output, 'contribute/index.html'), contribute(config, template, demo));
   await mkdir(path.join(output, 'templates'), { recursive: true });
-  await writeFile(path.join(output, 'templates/project-template.yaml'), template);
-  await writeFile(path.join(output, 'templates/pull-request-template.md'), prTemplate);
+  await writeFile(path.join(output, 'templates/project-template.md'), template);
   await writeFile(path.join(output, '404.html'), notFound(config, demo));
   for (const project of projects) {
     const location = path.join(output, 'projects', project.slug);
@@ -30,7 +28,7 @@ export async function build({ demo = false } = {}) {
   await writeFile(path.join(output, '.nojekyll'), '');
   await writeFile(path.join(output, 'robots.txt'), `User-agent: *\n${demo ? 'Disallow: /' : `Allow: /\nSitemap: ${config.siteUrl}sitemap.xml`}\n`);
   if (!demo) {
-    const urls = ['', 'contribute/', ...projects.map(p => `projects/${p.slug}/`)];
+    const urls = ['', 'contribute/', ...projects.map(p => `projects/${encodeURIComponent(p.slug)}/`)];
     const xmlEscape = value => value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('"', '&quot;');
     await writeFile(path.join(output, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(url => `<url><loc>${xmlEscape(config.siteUrl + url)}</loc></url>`).join('')}</urlset>`);
   }
