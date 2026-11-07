@@ -115,11 +115,12 @@ export function detail(config, project, demo = false) {
   return shell({ config, content, title: project.name, description: project.summary, prefix, demo, canonicalPath: 'projects/' + encodeURIComponent(project.slug) + '/' });
 }
 
-export function contribute(config, template, demo = false) {
+export function contribute(config, template, demo = false, agentPrompt = '') {
   const repo = 'https://github.com/' + config.repository;
   const form = repo + '/issues/new?template=share-project.yml';
   const content = `<div class="container guide"><a class="back-link" href="../#explore">${icon('back')} 返回作品</a><div class="guide-heading"><p class="eyebrow">SHARE YOUR PROJECT</p><h1><span class="marker">分享作品</span></h1><p>写介绍、放图片、贴链接即可。</p></div>
   <section class="submission-start"><div class="submission-main"><h2>直接填表投稿</h2><p>MakerWorld、GitHub 或其他平台的作品都可以。登录 GitHub 后填写表单，由维护者审核收录。</p>${ext(form, '填写投稿表单', 'button button-primary')}</div><aside class="aside-card"><h2>准备这些资料</h2><ul class="requirements"><li>名称和所属板块</li><li>原作品链接</li><li>项目说明和图片</li><li>视频链接（可选）</li></ul></aside></section>
+  <section class="submission-agent" id="agent"><h2>用 AI Agent 投稿</h2><p>复制提示词，连同作品链接和资料发给你的 Agent。</p><div class="agent-actions"><button type="button" class="button button-primary" data-copy="agent-prompt" aria-label="复制 Agent 提示词">${icon('copy')}<span aria-live="polite">复制提示词</span></button><a class="text-link" href="../templates/agent-submission-prompt.md" download>下载提示词 ${icon('arrow')}</a></div><details class="template-details"><summary>查看完整提示词</summary><div class="code-block"><pre><code id="agent-prompt">${escape(agentPrompt)}</code></pre></div></details></section>
   <section class="submission-template"><h2>简单投稿模板</h2><div class="code-block"><div class="code-heading"><span>项目说明</span><button type="button" data-copy="project-template" aria-label="复制投稿模板">${icon('copy')}<span aria-live="polite">复制模板</span></button></div><pre><code id="project-template" data-template>${escape(template)}</code></pre></div><a class="text-link" href="../templates/project-template.md" download>下载模板 ${icon('arrow')}</a>
   <details class="template-details"><summary>也可以通过 PR 投稿</summary><div class="pr-instructions"><ol><li>在社区仓库中，网页新建 <code>projects/你的作品名.md</code>。</li><li>粘贴上面的模板，填好介绍、图片和链接。</li><li>按 GitHub 提示提交 Pull Request，合并后自动展示。</li></ol><p>GitHub 可能提示创建社区仓库的副本。只想分享作品，可以直接用上面的投稿表单。</p>${ext(repo + '/new/' + config.branch + '/projects', '网页新建介绍', 'button button-light')}</div></details></section></div>`;
   return shell({ config, content, title: '分享作品', prefix: '../', demo, canonicalPath: 'contribute/' });

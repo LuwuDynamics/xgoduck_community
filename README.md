@@ -14,6 +14,8 @@ MakerWorld 作者不需要另外建立代码仓库，也不需要安装任何软
 
 熟悉 GitHub 的作者，也可以在 `projects/` 新建一份 Markdown 介绍并提 PR，全部在网页完成。直接复制[简单投稿模板](.github/pull_request_template.md)即可，步骤见[投稿说明](CONTRIBUTING.md)。
 
+使用 AI Agent 的作者可直接复制 [Agent 投稿提示词](docs/AGENT_SUBMISSION_PROMPT.md)，或在[投稿页](https://luwudynamics.github.io/xgoduck_community/contribute/#agent)一键复制。提供作品链接与现有资料，Agent 即可帮助整理介绍并投稿。
+
 ## 四个板块
 
 | 板块 | 内容 |

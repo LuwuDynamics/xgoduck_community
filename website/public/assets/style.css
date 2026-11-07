@@ -264,6 +264,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .submission-main h2, .submission-template > h2 { margin-bottom: 16px; font-size: 28px; letter-spacing: -.035em; }
 .submission-main p { max-width: 580px; margin-bottom: 24px; color: #3e4636; font-size: 17px; line-height: 1.85; }
 .submission-template { max-width: 840px; margin-top: 48px; }
+.submission-agent { max-width: 840px; margin-top: 48px; padding-top: 30px; border-top: 1px solid #c5ceba; scroll-margin-top: 110px; }
+.submission-agent h2 { margin-bottom: 14px; font-size: 28px; letter-spacing: -.035em; }
+.submission-agent > p { margin-bottom: 20px; font-size: 16px; color: #3e4636; }
+.agent-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 14px 26px; }
+.submission-agent .code-block pre { max-height: 360px; }
 .submission-template .code-block pre { max-height: 330px; }
 .pr-instructions { padding: 4px 22px 24px; }
 .pr-instructions ol { padding-left: 22px; margin-bottom: 22px; }
@@ -277,4 +282,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .submission-main h2, .submission-template > h2 { font-size: 25px; }
   .submission-main p { font-size: 16px; }
   .submission-template { margin-top: 36px; }
+  .submission-agent { margin-top: 36px; padding-top: 25px; }
+  .submission-agent h2 { font-size: 25px; }
 }

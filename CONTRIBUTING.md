@@ -11,6 +11,12 @@
 
 MakerWorld、GitHub 等平台都可以。无需创建自己的代码仓库、下载社区仓库或安装软件。维护者会在投稿中沟通并审核收录。
 
+## 使用 AI Agent
+
+复制 [Agent 投稿提示词](docs/AGENT_SUBMISSION_PROMPT.md)，填入作品链接和现有资料，发给你的 AI Agent 即可。[网页投稿页](https://luwudynamics.github.io/xgoduck_community/contribute/#agent)支持一键复制和下载。
+
+提示词默认整理并创建投稿 Issue，也可以指定 PR 或只整理材料。缺少必需资料时，Agent 应先向作者确认；没有提交权限时，应返回可粘贴的正文和投稿链接。
+
 ## 通过 PR 投稿
 
 如果已经熟悉 GitHub，也可以直接提交一份介绍：

@@ -41,5 +41,6 @@ GitHub Pages 的 Source 使用 GitHub Actions；部署目录为 `dist/`。`dist-
 - 样式与浏览器脚本：`website/public/assets/`。
 - 投稿表单：`.github/ISSUE_TEMPLATE/share-project.yml`。
 - 投稿与 PR 模板：`.github/pull_request_template.md`，网站复制和下载使用同一文件。
+- Agent 投稿提示词：`docs/AGENT_SUBMISSION_PROMPT.md`，投稿页与下载文件由同一份内容生成。
 
 配色参考 [XGORobot Duck 官网](https://www.xgorobot.com/duck.html)。本地查看：`node scripts/serve.mjs --build --watch`；演示加 `--demo`。

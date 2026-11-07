@@ -7,7 +7,10 @@ import { home, detail, contribute, notFound } from '../website/templates.mjs';
 export async function build({ demo = false } = {}) {
   const config = await loadConfig();
   const projects = await loadProjects({ directory: demo ? 'examples/demo' : 'projects' });
-  const template = await readFile(path.join(ROOT, '.github/pull_request_template.md'), 'utf8');
+  const [template, agentPrompt] = await Promise.all([
+    readFile(path.join(ROOT, '.github/pull_request_template.md'), 'utf8'),
+    readFile(path.join(ROOT, 'docs/AGENT_SUBMISSION_PROMPT.md'), 'utf8')
+  ]);
   // Output paths are fixed and confined to the repository, including when called by dev.
   const output = path.join(ROOT, demo ? 'dist-demo' : 'dist');
   await rm(output, { force: true, recursive: true });
@@ -15,9 +18,10 @@ export async function build({ demo = false } = {}) {
   await cp(path.join(ROOT, 'website/public'), output, { recursive: true, filter: source => !source.endsWith('.gitkeep') });
   await mkdir(path.join(output, 'contribute'), { recursive: true });
   await writeFile(path.join(output, 'index.html'), home(config, projects, demo));
-  await writeFile(path.join(output, 'contribute/index.html'), contribute(config, template, demo));
+  await writeFile(path.join(output, 'contribute/index.html'), contribute(config, template, demo, agentPrompt));
   await mkdir(path.join(output, 'templates'), { recursive: true });
   await writeFile(path.join(output, 'templates/project-template.md'), template);
+  await writeFile(path.join(output, 'templates/agent-submission-prompt.md'), agentPrompt);
   await writeFile(path.join(output, '404.html'), notFound(config, demo));
   for (const project of projects) {
     const location = path.join(output, 'projects', project.slug);

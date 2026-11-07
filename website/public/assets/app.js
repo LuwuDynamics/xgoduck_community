@@ -63,6 +63,8 @@ document.querySelectorAll('[data-copy]').forEach(button => {
       label.textContent = '已复制';
       resetTimer = setTimeout(() => { label.textContent = original; }, 2200);
     } catch {
+      const disclosure = template.closest('details');
+      if (disclosure) disclosure.open = true;
       const range = document.createRange();
       range.selectNodeContents(template);
       const selection = getSelection();
