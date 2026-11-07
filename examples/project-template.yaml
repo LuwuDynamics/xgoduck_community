@@ -1,0 +1,37 @@
+# 复制到 projects/your-project.yaml；文件名即网站详情页地址。
+# 用真实信息替换所有 YOUR-* 占位内容后提交 PR。
+# yaml-language-server: $schema=../schemas/project.schema.json
+name: Your Project
+summary: 用一句话介绍你的 XGO-Duck 项目。
+description: |
+  说明项目做了什么、解决什么问题，以及有哪些功能。
+
+  可以分段描述。字段只接受纯文本，不解析 HTML 或 Markdown。
+author:
+  name: YOUR-NAME
+  url: https://github.com/YOUR-NAME
+# 结构 structure / 整机固件 firmware / 动作模型 motion-model / 音视频交互 av-interaction
+category: structure
+# GitHub、MakerWorld 或其他公开项目主页，必须使用 HTTPS。
+repository: https://github.com/YOUR-NAME/YOUR-PROJECT
+# 可选：截图放在 website/public/assets/projects/；也支持 HTTPS 图片。
+# image: assets/projects/your-project.webp
+# image_alt: 展示项目功能的截图说明
+# gallery:
+#   - image: assets/projects/your-project-detail.webp
+#     alt: 项目细节说明
+# video: https://www.youtube.com/watch?v=YOUR-VIDEO-ID
+# documentation: https://github.com/YOUR-NAME/YOUR-PROJECT#readme
+# issues: https://github.com/YOUR-NAME/YOUR-PROJECT/issues
+tags:
+  - 3D 打印
+compatibility:
+  hardware:
+    - XGO-Duck（请填写硬件版本）
+  firmware: 请填写已验证的固件或软件版本
+  notes: 说明依赖、是否需要替换固件或修改硬件，以及尚未验证的部分。
+installation:
+  - 在作者仓库阅读完整文档并下载对应版本。
+  - 请填写项目实际的安装步骤与必要依赖。
+license: 请填写原项目许可证
+updated: '2026-11-07'
