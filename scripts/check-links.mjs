@@ -1,6 +1,8 @@
-import { loadProjects, projectUrls } from './lib/catalog.mjs';
-import { checkLink } from './lib/links.mjs';
+import path from 'node:path';
+import { ROOT, loadConfig, loadProjects, projectUrls } from './lib/catalog.mjs';
+import { checkLink, checkBuiltLink } from './lib/links.mjs';
 try {
+  const config = await loadConfig();
   const projects = await loadProjects();
   const urls = [...new Set(projects.flatMap(projectUrls))];
   let errors = 0;
@@ -9,7 +11,7 @@ try {
   await Promise.all(Array.from({ length: Math.min(4, urls.length) }, async () => {
     while (cursor < urls.length) {
       const url = urls[cursor++];
-      const result = await checkLink(url);
+      const result = await checkBuiltLink(url, { siteUrl: config.siteUrl, directory: path.join(ROOT, 'dist') }) ?? await checkLink(url);
       if (result.state === 'error') errors++;
       if (result.state === 'warning') warnings++;
       console.log(`${result.state.toUpperCase()} ${url} — ${result.reason}`);

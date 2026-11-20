@@ -1,7 +1,24 @@
 import https from 'node:https';
+import { stat } from 'node:fs/promises';
+import path from 'node:path';
 import dns from 'node:dns/promises';
 import net from 'node:net';
 import { publicUrl } from './catalog.mjs';
+
+// Newly added site assets are checked in the build, before Pages deploys them.
+export async function checkBuiltLink(input, { siteUrl, directory }) {
+  const url = new URL(input), site = new URL(siteUrl);
+  if (url.origin !== site.origin || !url.pathname.startsWith(site.pathname)) return null;
+  const root = path.resolve(directory);
+  const target = path.resolve(root, decodeURIComponent(url.pathname.slice(site.pathname.length)));
+  if (target !== root && !target.startsWith(root + path.sep)) return { state: 'error', reason: '站内资源超出构建目录' };
+  try {
+    const info = await stat(target);
+    const file = info.isDirectory() ? await stat(path.join(target, 'index.html')) : info;
+    if (!file.isFile()) throw new Error('不是文件');
+    return { state: 'ok', reason: '站内资源已生成' };
+  } catch { return { state: 'error', reason: '构建中不存在该站内资源' }; }
+}
 
 const blocked = new net.BlockList();
 for (const [ip, prefix] of [['0.0.0.0', 8], ['10.0.0.0', 8], ['100.64.0.0', 10], ['127.0.0.0', 8], ['169.254.0.0', 16], ['172.16.0.0', 12], ['192.0.0.0', 24], ['192.0.2.0', 24], ['192.168.0.0', 16], ['198.18.0.0', 15], ['198.51.100.0', 24], ['203.0.113.0', 24], ['224.0.0.0', 4], ['240.0.0.0', 4]]) blocked.addSubnet(ip, prefix, 'ipv4');
