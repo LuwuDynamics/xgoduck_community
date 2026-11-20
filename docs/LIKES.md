@@ -15,9 +15,21 @@
 1. 仓库管理员打开 [giscus GitHub App](https://github.com/apps/giscus)，安装时只选择 `LuwuDynamics/xgoduck_community`。这一授权需要管理员在 GitHub 完成，不在仓库中保存访问令牌。
 2. 本仓库已启用 Discussions，并已核对 `Announcements` 分类及公开 ID。安装完成后访问 [配置检查接口](https://giscus.app/api/discussions/categories?repo=LuwuDynamics%2Fxgoduck_community)，应返回 HTTP 200，且仓库与分类 ID 匹配 `site.config.json`。不要把 403 或安装未完成当成已启用。
 3. 把 `reactions.enabled` 改为 `true`，构建、提交并等待 Pages 部署成功。`giscus.json` 仅允许本网站来源加载。
-4. 用已获准的真实投稿详情页验证：未登录可见登录入口；完成 GitHub 授权；选择 👍 后计数增加；再次点击后恢复；刷新页面确认状态一致。测试点赞后应取消。当前正式目录没有作品，不要为了测试擅自恢复已下架作品。
+4. 用已获准的真实投稿详情页验证：未登录可见登录入口；完成 GitHub 授权；选择 👍 后计数增加；再次点击后恢复；刷新页面确认状态一致。测试点赞后应取消，不要为了测试擅自恢复已下架作品。
 
 ## 维护与限制
+
+## 权限与安全评估
+
+2026-11-20 通过 GitHub 的 `GET /apps/giscus` 核对，当前 App 请求 `discussions: write` 与 `metadata: read`，没有请求源代码写入权限。这不是永久保证，安装时应以 GitHub 权限确认页为准，并只选择本社区仓库。
+
+权限并非只限点赞，而是 Discussions 写入。若第三方 App 或服务受损，已授予范围内的讨论内容可能受到影响。只选择一个公开社区仓库，可以缩小影响范围；不要选择所有公司仓库。
+
+根据[隐私政策](https://github.com/giscus/giscus/blob/main/PRIVACY-POLICY.md)，登录后浏览器保存服务器加密的授权令牌，giscus 服务器会解密它以向 GitHub 发起认证请求。因此需要信任第三方服务；「数据存放在 GitHub」不等于登录凭据完全不经过 giscus。
+
+页面会加载 `giscus.app/client.js` 及其 iframe。远程脚本的更新和供应链属于额外信任边界，内嵌 iframe 不能隔离最初加载到父页面的脚本。限制来源或隐藏评论仅是配置与展示，不是防止第三方脚本受损的安全隔离。
+
+点赞与 GitHub 身份相关，并非匿名；服务或网络故障时，点赞可能无法加载。用于公开社区时风险可控，但不应称为零风险。目前该功能保持关闭，待管理员决定是否授权后再启用。
 
 - 不添加 npm 依赖，不给投稿者增加字段。讨论使用固定的 `xgoduck-community/文件名` 映射，不会因为标题改名而丢失点赞；不要随意修改已发布文件名。
 - giscus 是外部托管服务，无法保证永不故障。组件失败不影响作品介绍、图片和外部作品链接。
