@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { ROOT, parseProject, loadProjects, publicUrl, loadConfig } from '../scripts/lib/catalog.mjs';
 import { isPublicIP } from '../scripts/lib/links.mjs';
-import { home, showcase, detail, contribute } from '../website/templates.mjs';
+import { home, showcase, detail, contribute, reactions } from '../website/templates.mjs';
 
 function submission(fields = {}) {
   return Object.entries({
@@ -94,6 +94,22 @@ test('photo-only shares load together and duplicate media is rejected', async ()
     await writeFile(path.join(root,'projects/second.md'), first);
     await assert.rejects(loadProjects({root}), /重复/);
   } finally { await rm(root,{recursive:true,force:true}); }
+});
+
+test('reactions stay off until configured and never create discussions for demo content', async () => {
+  const config = await loadConfig();
+  const project = parseProject(submission(), '我的轮足');
+  assert.equal(reactions({...config,reactions:undefined},project),'');
+  assert.equal(reactions({...config,reactions:{...config.reactions,enabled:false}},project),'');
+  const enabled = {...config,reactions:{...config.reactions,enabled:true}};
+  assert.equal(reactions(enabled,project,true),'');
+  const markup = reactions(enabled,project);
+  assert.match(markup,/src="https:\/\/giscus.app\/client.js"/);
+  assert.match(markup,/data-term="xgoduck-community\/我的轮足"/);
+  assert.match(markup,/data-strict="1"/);
+  assert.match(markup,/assets\/reactions.css/);
+  assert.equal((detail(enabled,project).match(/src="https:\/\/giscus.app\/client.js"/g)??[]).length,1);
+  assert.doesNotMatch(home(enabled,[project]),/giscus.app\/client.js/);
 });
 
 test('missing required sections, duplicate headings and unsupported categories are rejected', () => {

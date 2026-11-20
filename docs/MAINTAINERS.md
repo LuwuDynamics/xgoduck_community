@@ -76,6 +76,8 @@ GitHub Pages 的 Source 使用 GitHub Actions；部署目录为 `dist/`。`dist-
 
 ## 修改网站
 
+页面内点赞的方案、一次性授权和启停步骤见 [LIKES.md](LIKES.md)。
+
 - 作品数据：`projects/*.md`。
 - 网站身份：`site.config.json`。
 - 页面：`website/templates.mjs`。

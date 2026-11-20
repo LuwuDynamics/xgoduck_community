@@ -3,5 +3,11 @@
   "description": "XGO-Duck 社区作品与小鸭日常：结构、整机固件、动作模型、音视频交互、晒晒小鸭。",
   "repository": "LuwuDynamics/xgoduck_community",
   "branch": "main",
-  "siteUrl": "https://luwudynamics.github.io/xgoduck_community/"
+  "siteUrl": "https://luwudynamics.github.io/xgoduck_community/",
+  "reactions": {
+    "enabled": false,
+    "repoId": "R_kgDOVl9W6Q",
+    "category": "Announcements",
+    "categoryId": "DIC_kwDOVl9W6c4DKk3s"
+  }
 }

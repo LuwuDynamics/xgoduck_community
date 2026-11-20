@@ -59,3 +59,5 @@ node scripts/serve.mjs --build --watch --demo
 社区仓库保存作品介绍和展示链接。下载、安装和问题反馈请到原作品页面。更新或下架可在原投稿中说明，或提交 PR 修改、删除相应 Markdown 文件。管理员 Agent 的操作提示词见[维护指南](docs/MAINTAINERS.md#给管理员-agent-的下架删除提示词)。删除提交部署后，作品从目录、详情页和索引中移除；原平台的内容不受影响。
 
 维护者审核步骤见 [docs/MAINTAINERS.md](docs/MAINTAINERS.md)。
+
+页面内点赞的评估、一次性安装与启用方法见 [docs/LIKES.md](docs/LIKES.md)。未安装 giscus App 前保持关闭，不增加构建依赖。

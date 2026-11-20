@@ -276,6 +276,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .pr-instructions p { font-size: 15px; color: #4f5548; margin-bottom: 20px; }
 .pr-instructions code { overflow-wrap: anywhere; }
 .project-credit { font-size: 15px; margin-bottom: 18px; }
+.entry-reactions { max-width: 912px; padding-bottom: 32px; }
+.entry-reactions iframe { width: 100%; border: 0; }
 .duck-card .project-cover { background: #eeeadd; }
 .video-cover { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; height: 100%; font-size: 16px; font-weight: 600; }
 .video-cover .icon { width: 48px; height: 48px; }

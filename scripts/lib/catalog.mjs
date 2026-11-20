@@ -104,5 +104,11 @@ export async function loadConfig(root = ROOT) {
   if (typeof config.title !== 'string' || typeof config.description !== 'string') throw new Error('网站标题和介绍必填');
   const site = publicUrl(config.siteUrl);
   if (!site.pathname.endsWith('/') || site.search || site.hash) throw new Error('siteUrl 必须是以 / 结尾的网站地址');
+  if (config.reactions) {
+    const r = config.reactions;
+    if (typeof r.enabled !== 'boolean' || !/^R_[\w-]+$/.test(r.repoId) || !/^DIC_[\w-]+$/.test(r.categoryId) || typeof r.category !== 'string' || !r.category.trim()) {
+      throw new Error('点赞配置无效，请核对 giscus 仓库与分类 ID');
+    }
+  }
   return config;
 }

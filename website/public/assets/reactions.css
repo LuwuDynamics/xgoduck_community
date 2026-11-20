@@ -1,0 +1,21 @@
+/* giscus supports custom themes. Keep its authentication and reaction behavior. */
+@import url("https://giscus.app/themes/light.css");
+
+main {
+  --color-canvas-default: #f5f3ed;
+  --color-canvas-subtle: #eaede3;
+  --color-fg-default: #242521;
+  --color-fg-muted: #4f5548;
+  --color-border-default: #c2cdb4;
+  --color-accent-fg: #4e5e33;
+  --color-accent-emphasis: #4e5e33;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+}
+
+/* This hub uses reactions only, without adding a comments panel. */
+.gsc-comments { display: none; }
+.gsc-reactions { margin: 0; padding: 8px 0; }
+.gsc-reactions-count { font-size: 14px; color: #4f5548; }
+.gsc-reactions-menu .gsc-emoji-button:not(:first-child) { display: none; }
+.gsc-reactions-menu summary::after { content: "点赞"; margin-left: 6px; font-size: 16px; }
+.gsc-social-reaction-summary-item { min-height: 44px; min-width: 44px; font-size: 16px; }

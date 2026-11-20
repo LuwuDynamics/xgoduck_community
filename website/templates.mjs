@@ -117,15 +117,24 @@ export function showcase(config, projects, demo = false) {
   return home(config, projects, demo, { prefix: '../', initialCategory: 'duck-life', title: '晒晒小鸭' });
 }
 
+export function reactions(config, project, demo = false) {
+  const settings = config.reactions;
+  if (demo || !settings?.enabled) return '';
+  const theme = new URL('assets/reactions.css', config.siteUrl).href;
+  return `<section class="entry-reactions container" aria-label="作品点赞"><div class="giscus"></div>
+<script src="https://giscus.app/client.js" data-repo="${escape(config.repository)}" data-repo-id="${escape(settings.repoId)}" data-category="${escape(settings.category)}" data-category-id="${escape(settings.categoryId)}" data-mapping="specific" data-term="${escape('xgoduck-community/' + project.slug)}" data-strict="1" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="${escape(theme)}" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous" async></script>
+<noscript><p>启用 JavaScript 后可加载点赞。</p></noscript></section>`;
+}
+
 export function detail(config, project, demo = false) {
   const prefix = '../../';
   const category = categoryFor(project);
   if (project.category === 'duck-life') {
     const content = `<div class="container detail"><a class="back-link" href="../../?category=duck-life#explore">${icon('back')} 返回晒晒小鸭</a><div class="duck-detail"><div class="project-category">晒晒小鸭${demo ? '<span class="demo-tag-inline">虚构示例</span>' : ''}</div><h1>${escape(project.name)}</h1>${project.author ? `<p class="project-credit">${escape(project.author.name)}</p>` : ''}<div class="prose">${paragraphs(project.description)}</div>${project.image ? `<figure class="duck-detail-cover">${thumbnail(project, prefix)}</figure>` : ''}${project.gallery?.length ? `<div class="gallery duck-detail-gallery">${project.gallery.map(item => `<figure><img src="${escape(item.image)}" alt="${escape(item.alt)}" loading="lazy" referrerpolicy="no-referrer"></figure>`).join('')}</div>` : ''}<div class="duck-detail-actions">${project.video ? ext(project.video, icon('play') + '观看视频', 'button button-primary') : ''}${project.repository && !demo ? ext(project.repository, '相关链接', 'button button-light') : ''}</div></div></div>`;
-    return shell({ config, content, title: project.name, description: project.summary, prefix, demo, canonicalPath: 'projects/' + encodeURIComponent(project.slug) + '/' });
+    return shell({ config, content: content + reactions(config, project, demo), title: project.name, description: project.summary, prefix, demo, canonicalPath: 'projects/' + encodeURIComponent(project.slug) + '/' });
   }
   const content = `<div class="container detail"><a class="back-link" href="../../#explore">${icon('back')} 返回作品</a><div class="detail-layout"><div class="detail-main"><div class="project-category">${category.label}${demo ? '<span class="demo-tag-inline">虚构示例</span>' : ''}</div><h1>${escape(project.name)}</h1>${project.author ? `<p class="project-credit">作者：${escape(project.author.name)}</p>` : ''}<div class="prose">${paragraphs(project.description)}</div><div class="detail-cover">${thumbnail(project, prefix)}</div>${project.gallery?.length ? `<section><h2>项目图片</h2><div class="gallery">${project.gallery.map(item => `<figure><img src="${escape(item.image)}" alt="${escape(item.alt)}" loading="lazy" referrerpolicy="no-referrer"></figure>`).join('')}</div></section>` : ''}${project.video ? `<section class="video-section"><h2>演示视频</h2>${ext(project.video, icon('play') + '观看视频', 'button button-light')}</section>` : ''}</div><aside class="detail-aside"><div class="aside-card"><h2>原作品</h2>${demo ? '<span class="button button-disabled" aria-disabled="true">示例 · 无实际作品链接</span>' : ext(project.repository, '查看原作品', 'button button-primary')}</div></aside></div></div>`;
-  return shell({ config, content, title: project.name, description: project.summary, prefix, demo, canonicalPath: 'projects/' + encodeURIComponent(project.slug) + '/' });
+  return shell({ config, content: content + reactions(config, project, demo), title: project.name, description: project.summary, prefix, demo, canonicalPath: 'projects/' + encodeURIComponent(project.slug) + '/' });
 }
 
 export function contribute(config, template, demo = false, agentPrompt = '', duckTemplate = '') {
