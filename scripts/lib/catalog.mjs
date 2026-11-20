@@ -5,12 +5,19 @@ import net from 'node:net';
 
 export const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 export const CATEGORIES = [
-  { id: 'structure', label: '结构' },
-  { id: 'firmware', label: '整机固件' },
-  { id: 'motion-model', label: '动作模型' },
-  { id: 'av-interaction', label: '音视频交互' },
-  { id: 'duck-life', label: '晒晒小鸭' }
+  { id: 'structure', label: '结构', en: 'Structure' },
+  { id: 'firmware', label: '整机固件', en: 'Firmware' },
+  { id: 'motion-model', label: '动作模型', en: 'Motion models' },
+  { id: 'av-interaction', label: '音视频交互', en: 'Audio & video' },
+  { id: 'duck-life', label: '晒晒小鸭', en: 'Duck showcase' }
 ];
+
+const FIELD_NAMES = {
+  项目名称: '项目名称', 分享标题: '项目名称', 'project name': '项目名称', 'share title': '项目名称',
+  所属板块: '所属板块', category: '所属板块', 作品链接: '作品链接', 'project url': '作品链接',
+  项目说明: '项目说明', 分享说明: '项目说明', description: '项目说明',
+  图片: '图片', images: '图片', 视频链接: '视频链接', 'video url': '视频链接', 作者: '作者', author: '作者'
+};
 
 export function publicUrl(value) {
   if (typeof value !== 'string' || value.length > 2048) throw new Error('链接请保持在 2048 字符以内');
@@ -31,10 +38,10 @@ export function parseProject(source, slug) {
     throw new Error('文件名请使用中文、英文、数字、空格或连字符，例如「我的轮足.md」');
   }
   if (Buffer.byteLength(source) > 64 * 1024) throw new Error('项目说明不得超过 64 KB');
-  const headings = [...source.matchAll(/^###\s+(项目名称|分享标题|所属板块|作品链接|项目说明|分享说明|图片|视频链接|作者)\s*$/gm)];
+  const headings = [...source.matchAll(new RegExp('^###\\s+(' + Object.keys(FIELD_NAMES).join('|') + ')\\s*$', 'gmi'))];
   const fields = {};
   headings.forEach((match, index) => {
-    const field = ({ 分享标题: '项目名称', 分享说明: '项目说明' })[match[1]] ?? match[1];
+    const field = FIELD_NAMES[match[1].toLowerCase()];
     if (Object.hasOwn(fields, field)) throw new Error(`请勿重复填写「${match[1]}」`);
     const end = headings[index + 1]?.index ?? source.length;
     let value = source.slice(match.index + match[0].length, end).trim();
@@ -46,7 +53,7 @@ export function parseProject(source, slug) {
   }
   if (fields['项目名称'].length > 70 || fields['项目名称'].includes('\n')) throw new Error('项目名称请保持在一行、70 字以内');
   if (fields['项目说明'].length < 5 || fields['项目说明'].length > 12000) throw new Error('项目说明请填写 5–12000 字');
-  const category = CATEGORIES.find(item => item.label === fields['所属板块'] || item.id === fields['所属板块']);
+  const category = CATEGORIES.find(item => item.label === fields['所属板块'] || item.id === fields['所属板块'] || item.en.toLowerCase() === fields['所属板块'].toLowerCase());
   if (!category) throw new Error('所属板块请选择：结构、整机固件、动作模型、音视频交互、晒晒小鸭');
   const repository = linksIn(fields['作品链接'] ?? '')[0];
   if (!repository && (category.id !== 'duck-life' || fields['作品链接'])) throw new Error('请填写「作品链接」：MakerWorld、GitHub 或其他作品页面的 HTTPS 链接');

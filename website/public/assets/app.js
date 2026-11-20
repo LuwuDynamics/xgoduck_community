@@ -1,4 +1,16 @@
-// Static pages work without JS; this only adds search and category filters.
+// Preserve filters when switching the interface language; entry content stays unchanged.
+const english = document.documentElement.lang === 'en';
+document.querySelectorAll('[data-language-switch]').forEach(link => {
+  const sync = () => {
+    const target = new URL(link.href);
+    target.search = location.search;
+    target.hash = location.hash;
+    link.href = target.href;
+  };
+  sync();
+  link.addEventListener('click', sync);
+});
+
 const grid = document.querySelector('[data-grid]');
 if (grid) {
   document.querySelectorAll('[data-enhanced]').forEach(el => { el.hidden = false; });
@@ -28,11 +40,11 @@ if (grid) {
       button.setAttribute('aria-pressed', String(active));
     });
     document.querySelector('[data-count]').textContent = String(count).padStart(2, '0');
-    document.querySelector('[data-results]').textContent = `显示 ${count} / ${cards.length} 个作品`;
+    document.querySelector('[data-results]').textContent = english ? `Showing ${count} of ${cards.length} projects` : `显示 ${count} / ${cards.length} 个作品`;
     empty.hidden = count > 0;
     const filtered = !!words.length || category !== 'all';
-    document.querySelector('[data-empty-title]').textContent = filtered ? '没有匹配的作品' : original.title;
-    document.querySelector('[data-empty-description]').textContent = filtered ? '请更换关键词或清除筛选。' : original.description;
+    document.querySelector('[data-empty-title]').textContent = filtered ? (english ? 'No matching projects' : '没有匹配的作品') : original.title;
+    document.querySelector('[data-empty-description]').textContent = filtered ? (english ? 'Try another keyword or clear the filters.' : '请更换关键词或清除筛选。') : original.description;
     reset.hidden = !filtered;
     if (save) {
       const params = new URLSearchParams();
@@ -61,7 +73,7 @@ document.querySelectorAll('[data-copy]').forEach(button => {
     try {
       await navigator.clipboard.writeText(template.textContent);
       clearTimeout(resetTimer);
-      label.textContent = '已复制';
+      label.textContent = english ? 'Copied' : '已复制';
       resetTimer = setTimeout(() => { label.textContent = original; }, 2200);
     } catch {
       const disclosure = template.closest('details');
@@ -70,7 +82,7 @@ document.querySelectorAll('[data-copy]').forEach(button => {
       range.selectNodeContents(template);
       const selection = getSelection();
       selection.removeAllRanges(); selection.addRange(range);
-      label.textContent = '已选中，请手动复制';
+      label.textContent = english ? 'Selected — copy manually' : '已选中，请手动复制';
     }
   });
 });

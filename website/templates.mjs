@@ -1,147 +1,98 @@
 import { CATEGORIES } from '../scripts/lib/catalog.mjs';
+import { escape, icon, projectArt } from './art.mjs';
+import { messages, isEnglish, categoryLabel } from './i18n.mjs';
+export { escape, icon, duckArt, projectArt } from './art.mjs';
 
-export const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-const paths = {
-  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
-  external: '<path d="M14 3h7v7M21 3l-11 11M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/>',
-  github: '<path d="M9 19c-4.3 1.3-4.3-2.2-6-2.6M15 22v-3.9a3.4 3.4 0 0 0-1-2.7c3.3-.4 6.7-1.6 6.7-7.4a5.8 5.8 0 0 0-1.6-4c.2-1 .2-2-.1-3 0 0-1.3-.4-4.2 1.6a14.3 14.3 0 0 0-7.6 0C4.3.6 3 1 3 1c-.4 1-.4 2-.1 3a5.8 5.8 0 0 0-1.6 4c0 5.8 3.4 7 6.7 7.4a3.4 3.4 0 0 0-1 2.7V22" transform="translate(1 0) scale(.95)"/>',
-  search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/>',
-  plus: '<path d="M12 5v14M5 12h14"/>',
-  box: '<path d="m12 3 9 5v9l-9 5-9-5V8l9-5ZM3 8l9 5 9-5M12 13v9M7.5 5.5l9 5"/>',
-  chip: '<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 1v5M15 1v5M9 18v5M15 18v5M1 9h5M1 15h5M18 9h5M18 15h5"/><path d="M10 10h4v4h-4z"/>',
-  brain: '<path d="M12 18a4 4 0 0 1-7 2 4 4 0 0 1-2-7 4 4 0 0 1 2-7 4 4 0 0 1 7-2v14ZM12 5h5l3 3M12 12h8M12 19h5l3-3"/><circle cx="21" cy="9" r="1"/><circle cx="21" cy="12" r="1"/><circle cx="21" cy="15" r="1"/>',
-  grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
-  book: '<path d="M12 5C8 2 5 3 2 4v16c3-1 6-2 10 1 4-3 7-2 10-1V4c-3-1-6-2-10 1v16"/>',
-  branch: '<circle cx="6" cy="5" r="3"/><circle cx="6" cy="20" r="3"/><circle cx="19" cy="5" r="3"/><path d="M6 8v9M19 8a8 8 0 0 1-8 8H6"/>',
-  check: '<path d="m5 12 4 4L19 6"/>',
-  play: '<path d="m9 5 11 7-11 7V5Z"/>',
-  copy: '<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V3H3v13h5"/>',
-  back: '<path d="M19 12H5m6-6-6 6 6 6"/>',
-  globe: '<circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="12" rx="4" ry="10"/><path d="M2 12h20"/>'
-};
-export const icon = name => `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name] ?? paths.box}</svg>`;
-const ext = (url, label, cls = '') => `<a href="${escape(url)}" class="${cls}" target="_blank" rel="noopener noreferrer"${cls === 'github-nav' ? ' aria-label="GitHub 社区仓库（新窗口）"' : ''}>${label}${icon('external')}<span class="sr-only">（新窗口）</span></a>`;
-const categoryFor = p => CATEGORIES.find(c => c.id === p.category);
 const paragraphs = value => String(value).split(/\n\s*\n/).map(p => `<p>${escape(p).replace(/\n/g, '<br>')}</p>`).join('');
+const external = config => (url, label, cls = '') => `<a href="${escape(url)}" class="${cls}" target="_blank" rel="noopener noreferrer"${cls === 'github-nav' ? ` aria-label="${messages(config).githubLabel}"` : ''}>${label}${icon('external')}<span class="sr-only">${messages(config).newWindow}</span></a>`;
 
-export function duckArt() {
-  return `<svg class="duck-art" viewBox="0 0 520 360" fill="none" aria-hidden="true">
-    <ellipse cx="279" cy="296" rx="137" ry="20" fill="currentColor" opacity=".05"/>
-    <g stroke="currentColor" stroke-width="2.5" stroke-linejoin="round">
-      <path d="m207 175 65-35 91 37-67 39-89-41Z" fill="#fffdf6"/>
-      <path d="M207 175v49l89 41v-49l-89-41Zm89 41 67-39v48l-67 40" fill="#e8e7dd"/>
-      <path d="m230 158 1-36 50-24 48 22v37" fill="#fffdf6"/>
-      <path d="m231 122 49 23 49-25M280 145v32"/>
-      <path d="m280 145 50-24v36l-50 26v-38Z" fill="#242521"/>
-      <ellipse cx="295" cy="153" rx="3" ry="5" fill="#fff8cf" stroke="none"/>
-      <ellipse cx="316" cy="142" rx="3" ry="5" fill="#fff8cf" stroke="none"/>
-      <path d="m330 145 26 3-25 15-13-3" fill="#ffd64a"/>
-      <path d="m230 221-17 34 22 26M320 250l-8 27 27 17" stroke-width="11" stroke="#888c79"/>
-      <path d="m230 221-17 34 22 26M320 250l-8 27 27 17" stroke-width="5" stroke="#f7f6ee"/>
-      <path d="m209 279 32-5 26 17-44 7-14-19Zm109 13 26-5 34 13-47 8-13-16Z" fill="#fffefa"/>
-      <circle cx="237" cy="211" r="12" fill="#ffe377"/><circle cx="237" cy="211" r="4"/>
-      <path d="m211 184-24-6-8 19 29 12M256 185l23 11M256 194l23 11"/>
-      <path d="M281 98V81m-5 0h10"/>
-    </g>
-  </svg>`;
-}
-
-export function projectArt(category) {
-  if (category === 'structure') return duckArt();
-  const art = {
-    firmware: '<path d="m260 77 106 61v94l-106 61-106-61v-94l106-61Z" stroke="#989c88" stroke-dasharray="4 6"/><path d="m260 113 72 42v52l-72 42-72-42v-52l72-42Z" fill="#ede6c9" stroke="currentColor" stroke-width="2"/><path d="m188 155 72 42 72-42M260 197v52" stroke="currentColor" stroke-width="2"/><path d="m260 134 36 21-36 21-36-21 36-21Z" fill="#70693c"/><g stroke="currentColor" stroke-width="2"><path d="m207 170-25 14m44-3-25 14m44-3-25 14m64 11 25 14m-6-25 25 14m-6-25 25 14"/></g><text x="260" y="311" text-anchor="middle">0x01  /  BUILD. FLASH. REPEAT.</text>',
-    'motion-model': '<g stroke="#a0a88d" stroke-width="1.3"><path d="m132 110 126-20 120 35M132 110l30 132 96-152 23 126 97-91-23 127-74-36-119 26m0 0 193 10M132 110l149 106"/></g><g fill="#f7f8ef" stroke="#788060" stroke-width="2"><circle cx="132" cy="110" r="14"/><circle cx="258" cy="90" r="10"/><circle cx="378" cy="125" r="12"/><circle cx="162" cy="242" r="10"/><circle cx="355" cy="252" r="14"/></g><circle cx="281" cy="216" r="34" fill="#7f8c50"/><path d="m265 217 12 12 21-26" stroke="white" stroke-width="3"/><text x="260" y="311" text-anchor="middle">OBSERVE → LEARN → WALK</text>',
-    'av-interaction': '<rect x="160" y="78" width="200" height="174" rx="12" fill="#e3e8d7" stroke="#a0a68c" stroke-width="2"/><path d="M181 121v-22h24m112 0h23v22M181 211v22h24m112 0h23v-22" stroke="#69734e" stroke-width="3"/><path d="M204 167s23-30 56-30 56 30 56 30-23 30-56 30-56-30-56-30Z" stroke="#69734e" stroke-width="2"/><circle cx="260" cy="167" r="15" fill="#8b965c"/><path d="M260 63v15M145 167h15m200 0h15M260 252v15" stroke="#a0a68c" stroke-width="1.5"/><text x="260" y="311" text-anchor="middle">A DIFFERENT WAY TO SEE.</text>',
-  };
-  const drawing = (art[category] ?? art.firmware).replace(/<text\b[^>]*>[\s\S]*?<\/text>/g, '');
-  return `<svg class="project-art" viewBox="0 0 520 360" fill="none" aria-hidden="true">${drawing}</svg>`;
-}
-
-function shell({ config, content, title, prefix = './', demo = false, description = config.description, canonicalPath = '' }) {
+function shell({ config, content, title, prefix = './', demo = false, description, canonicalPath = '' }) {
+  const ui = messages(config), en = isEnglish(config), link = external(config);
   const repo = `https://github.com/${config.repository}`;
   const pageTitle = title ? `${title} · ${config.title}` : config.title;
+  const assetPrefix = prefix.startsWith('/') ? new URL(config.siteUrl).pathname : (en ? '../' : '') + prefix;
+  const alternate = en ? prefix + '../' + canonicalPath : prefix + 'en/' + canonicalPath;
+  const canonical = config.siteUrl + (en ? 'en/' : '') + canonicalPath;
+  description ??= ui.siteDescription;
   return `<!doctype html>
-<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="${en ? 'en' : 'zh-CN'}"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escape(pageTitle)}</title><meta name="description" content="${escape(description)}">
 <meta name="theme-color" content="#f5f3ed"><meta property="og:title" content="${escape(pageTitle)}"><meta property="og:description" content="${escape(description)}"><meta property="og:type" content="website">
-${demo ? '<meta name="robots" content="noindex,nofollow">' : `<link rel="canonical" href="${escape(config.siteUrl + canonicalPath)}">`}
-<link rel="icon" href="${prefix}assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="${prefix}assets/style.css">
-<script src="${prefix}assets/app.js" defer></script></head>
-<body><a class="skip-link" href="#main">跳至内容</a>
-<header class="site-header"><div class="container header-inner"><a class="brand" href="${prefix}" aria-label="XGO-Duck Community 首页"><span class="brand-name">XGO-DUCK<span class="brand-dot" aria-hidden="true">●</span></span><span class="brand-sub">COMMUNITY</span></a>
-<nav aria-label="主导航"><a class="nav-explore" href="${prefix}#explore">社区作品</a><a href="${prefix}contribute/">投稿指南</a>${ext(repo, '<span>GitHub</span>', 'github-nav')}</nav></div></header>
-${demo ? '<div class="container demo-notice"><span class="status-dot"></span> 演示预览 · 以下项目均为虚构示例</div>' : ''}
+${demo ? '<meta name="robots" content="noindex,nofollow">' : `<link rel="canonical" href="${escape(canonical)}"><link rel="alternate" hreflang="zh-CN" href="${escape(config.siteUrl + canonicalPath)}"><link rel="alternate" hreflang="en" href="${escape(config.siteUrl + 'en/' + canonicalPath)}">`}
+<link rel="icon" href="${assetPrefix}assets/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="${assetPrefix}assets/style.css"><script src="${assetPrefix}assets/app.js" defer></script></head>
+<body><a class="skip-link" href="#main">${ui.skip}</a>
+<header class="site-header"><div class="container header-inner"><a class="brand" href="${prefix}" aria-label="XGO-Duck Community · ${ui.home}"><span class="brand-name">XGO-DUCK<span class="brand-dot" aria-hidden="true">●</span></span><span class="brand-sub">COMMUNITY</span></a>
+<nav aria-label="${ui.navigation}"><a class="nav-explore" href="${prefix}#explore">${ui.projects}</a><a href="${prefix}contribute/">${ui.submitNav}</a><a class="language-switch" href="${alternate}" data-language-switch lang="${en ? 'zh-CN' : 'en'}" hreflang="${en ? 'zh-CN' : 'en'}">${en ? '中文' : 'English'}</a>${link(repo, '<span>GitHub</span>', 'github-nav')}</nav></div></header>
+${demo ? `<div class="container demo-notice">${ui.previewNotice}</div>` : ''}
 <main id="main">${content}</main>
-<footer class="site-footer"><div class="container footer-inner"><div><a class="footer-brand" href="${prefix}">XGO-DUCK<span class="brand-dot" aria-hidden="true">●</span><span class="footer-community">COMMUNITY</span></a><p>第三方项目由原作者独立维护。</p></div><div class="footer-links">${ext(`${repo}/discussions`, '社区讨论')}${ext(repo, 'GitHub')}</div></div></footer>
-</body></html>`;
+<footer class="site-footer"><div class="container footer-inner"><div><a class="footer-brand" href="${prefix}">XGO-DUCK<span class="brand-dot" aria-hidden="true">●</span><span class="footer-community">COMMUNITY</span></a><p>${ui.footer}</p></div><div class="footer-links">${link(`${repo}/discussions`, ui.discussion)}${link(repo, 'GitHub')}</div></div></footer></body></html>`;
 }
 
-function thumbnail(project, prefix = './') {
-  return project.image ? `<img src="${escape(project.image.startsWith('https://') ? project.image : prefix + project.image)}" alt="${escape(project.image_alt)}" loading="lazy" width="520" height="360" referrerpolicy="no-referrer">` : projectArt(project.category);
+function thumbnail(project, assetPrefix = './') {
+  return project.image ? `<img src="${escape(project.image.startsWith('https://') ? project.image : assetPrefix + project.image)}" alt="${escape(project.image_alt)}" loading="lazy" width="520" height="360" referrerpolicy="no-referrer">` : projectArt(project.category);
 }
 
-function platformName(url) {
-  if (!url) return '鸭友分享';
+function platformName(url, ui) {
+  if (!url) return ui.member;
   const host = new URL(url).hostname;
   if (host === 'makerworld.com' || host.endsWith('.makerworld.com')) return 'MakerWorld';
-  if (host === 'github.com') return 'GitHub';
-  return host;
+  return host === 'github.com' ? 'GitHub' : host;
 }
 
-function projectCard(project, demo, prefix = './', hidden = false) {
-  const category = categoryFor(project);
-  const sharing = project.category === 'duck-life';
-  const projectPath = prefix + 'projects/' + encodeURIComponent(project.slug) + '/';
-  const search = [project.name, project.description, project.author?.name ?? '', category.label, platformName(project.repository)].join(' ');
+function projectCard(config, project, demo, prefix = './', hidden = false) {
+  const ui = messages(config), category = CATEGORIES.find(c => c.id === project.category);
+  const sharing = project.category === 'duck-life', projectPath = prefix + 'projects/' + encodeURIComponent(project.slug) + '/';
+  const search = [project.name, project.description, project.author?.name ?? '', category.label, category.en, category.id, platformName(project.repository, ui)].join(' ');
+  const cover = project.image ? thumbnail(project, (isEnglish(config) ? '../' : '') + prefix) : sharing ? `<div class="video-cover">${icon('play')}<span>${ui.videoShare}</span></div>` : projectArt(project.category);
   return `<article class="project-card${sharing ? ' duck-card' : ''}" data-project data-category="${project.category}" data-search="${escape(search.toLowerCase())}"${hidden ? ' hidden' : ''}>
-    <a class="project-cover" href="${projectPath}" aria-label="查看 ${escape(project.name)} 的详情">${project.image ? thumbnail(project, prefix) : sharing ? `<div class="video-cover">${icon('play')}<span>视频分享</span></div>` : thumbnail(project, prefix)}${demo ? '<span class="demo-tag">演示项目</span>' : ''}</a>
-    <div class="project-body"><div class="project-category">${category.label}</div><h3><a href="${projectPath}">${escape(project.name)}</a></h3><p class="project-summary">${escape(project.summary)}</p>
-    <div class="project-meta"><span>${escape(project.author?.name ?? platformName(project.repository))}</span>${demo || sharing ? `<a href="${projectPath}">${sharing ? '查看分享' : '查看详情'}</a>` : ext(project.repository, '查看作品')}</div></div></article>`;
+<a class="project-cover" href="${projectPath}" aria-label="${ui.details}: ${escape(project.name)}">${cover}${demo ? `<span class="demo-tag">${ui.preview}</span>` : ''}</a>
+<div class="project-body"><div class="project-category">${escape(categoryLabel(config, category))}</div><h3><a href="${projectPath}">${escape(project.name)}</a></h3><p class="project-summary">${escape(project.summary)}</p>
+<div class="project-meta"><span>${escape(project.author?.name ?? platformName(project.repository, ui))}</span>${demo || sharing ? `<a href="${projectPath}">${sharing ? ui.shareDetails : ui.details}</a>` : external(config)(project.repository, ui.viewProject)}</div></div></article>`;
 }
 
 export function home(config, projects, demo = false, { prefix = './', initialCategory = 'all', title } = {}) {
-  const visible = projects.filter(p => initialCategory === 'all' || p.category === initialCategory);
-  const filters = [{ id: 'all', label: '全部' }, ...CATEGORIES];
-  const content = `<section class="directory-intro container"><div><p class="eyebrow">XGO-DUCK COMMUNITY</p><h1><span class="marker">社区作品</span></h1></div><div class="intro-action"><p>分享项目，也晒晒你的小鸭。</p><a class="button button-primary" href="${prefix}contribute/">提交作品</a></div></section>
-  <section id="explore" class="directory-surface" aria-labelledby="projects-heading"><div class="explore container"><div class="section-heading"><h2 id="projects-heading">作品目录 <span class="count-label" data-count>${String(visible.length).padStart(2, '0')}</span></h2></div>
-  <div class="explore-controls" data-enhanced hidden><div class="filter-row" role="group" aria-label="按作品类别筛选">${filters.map(c => `<button class="filter${c.id === initialCategory ? ' active' : ''}" data-category-filter="${c.id}" aria-pressed="${c.id === initialCategory}">${c.label}</button>`).join('')}</div>
-  <div class="search-row"><div class="search-input">${icon('search')}<label class="sr-only" for="search">搜索作品、作者、关键词</label><input id="search" type="search" placeholder="搜索作品、作者、关键词…" autocomplete="off" maxlength="150"><kbd>/</kbd></div></div></div>
-  <p class="sr-only" role="status" aria-live="polite" data-results>${visible.length} 个作品</p>
-  <div class="project-grid" data-grid data-default-category="${initialCategory}">${projects.map(p => projectCard(p, demo, prefix, initialCategory !== 'all' && p.category !== initialCategory)).join('')}</div>
-  <div class="empty-state" data-empty ${visible.length ? 'hidden' : ''}><h3 data-empty-title>暂无作品</h3><p data-empty-description>分享项目或小鸭日常，等待审核收录。</p><a class="button button-primary" href="${prefix}contribute/">提交作品</a><button class="text-link" type="button" data-reset hidden>清除筛选</button></div></div></section>`;
-  return shell({ config, content, demo, prefix, title });
+  const ui = messages(config), visible = projects.filter(p => initialCategory === 'all' || p.category === initialCategory);
+  const filters = [{ id: 'all', label: ui.all }, ...CATEGORIES.map(c => ({id:c.id,label:categoryLabel(config,c)}))];
+  const content = `<section class="directory-intro container"><div><p class="eyebrow">XGO-DUCK COMMUNITY</p><h1><span class="marker">${ui.projects}</span></h1></div><div class="intro-action"><p>${ui.intro}</p><a class="button button-primary" href="${prefix}contribute/">${ui.submit}</a></div></section>
+<section id="explore" class="directory-surface" aria-labelledby="projects-heading"><div class="explore container"><div class="section-heading"><h2 id="projects-heading">${ui.directory} <span class="count-label" data-count>${String(visible.length).padStart(2, '0')}</span></h2></div>
+<div class="explore-controls" data-enhanced hidden><div class="filter-row" role="group" aria-label="${ui.filter}">${filters.map(c => `<button class="filter${c.id === initialCategory ? ' active' : ''}" data-category-filter="${c.id}" aria-pressed="${c.id === initialCategory}">${escape(c.label)}</button>`).join('')}</div>
+<div class="search-row"><div class="search-input">${icon('search')}<label class="sr-only" for="search">${ui.search}</label><input id="search" type="search" placeholder="${ui.search}…" autocomplete="off" maxlength="150"><kbd>/</kbd></div></div></div>
+<p class="sr-only" role="status" aria-live="polite" data-results>${visible.length}</p><div class="project-grid" data-grid data-default-category="${initialCategory}">${projects.map(p => projectCard(config,p,demo,prefix,initialCategory !== 'all' && p.category !== initialCategory)).join('')}</div>
+<div class="empty-state" data-empty ${visible.length ? 'hidden' : ''}><h3 data-empty-title>${ui.empty}</h3><p data-empty-description>${ui.emptyDescription}</p><a class="button button-primary" href="${prefix}contribute/">${ui.submit}</a><button class="text-link" type="button" data-reset hidden>${ui.reset}</button></div></div></section>`;
+  return shell({config,content,demo,prefix,title});
 }
 
 export function showcase(config, projects, demo = false) {
-  // Keep previously shared URLs working with the same catalog and selected filter.
-  return home(config, projects, demo, { prefix: '../', initialCategory: 'duck-life', title: '晒晒小鸭' });
+  return home(config,projects,demo,{prefix:'../',initialCategory:'duck-life',title:messages(config).duckHeading});
 }
 
 export function detail(config, project, demo = false) {
-  const prefix = '../../';
-  const category = categoryFor(project);
-  if (project.category === 'duck-life') {
-    const content = `<div class="container detail"><a class="back-link" href="../../?category=duck-life#explore">${icon('back')} 返回晒晒小鸭</a><div class="duck-detail"><div class="project-category">晒晒小鸭${demo ? '<span class="demo-tag-inline">虚构示例</span>' : ''}</div><h1>${escape(project.name)}</h1>${project.author ? `<p class="project-credit">${escape(project.author.name)}</p>` : ''}<div class="prose">${paragraphs(project.description)}</div>${project.image ? `<figure class="duck-detail-cover">${thumbnail(project, prefix)}</figure>` : ''}${project.gallery?.length ? `<div class="gallery duck-detail-gallery">${project.gallery.map(item => `<figure><img src="${escape(item.image)}" alt="${escape(item.alt)}" loading="lazy" referrerpolicy="no-referrer"></figure>`).join('')}</div>` : ''}<div class="duck-detail-actions">${project.video ? ext(project.video, icon('play') + '观看视频', 'button button-primary') : ''}${project.repository && !demo ? ext(project.repository, '相关链接', 'button button-light') : ''}</div></div></div>`;
-    return shell({ config, content, title: project.name, description: project.summary, prefix, demo, canonicalPath: 'projects/' + encodeURIComponent(project.slug) + '/' });
-  }
-  const content = `<div class="container detail"><a class="back-link" href="../../#explore">${icon('back')} 返回作品</a><div class="detail-layout"><div class="detail-main"><div class="project-category">${category.label}${demo ? '<span class="demo-tag-inline">虚构示例</span>' : ''}</div><h1>${escape(project.name)}</h1>${project.author ? `<p class="project-credit">作者：${escape(project.author.name)}</p>` : ''}<div class="prose">${paragraphs(project.description)}</div><div class="detail-cover">${thumbnail(project, prefix)}</div>${project.gallery?.length ? `<section><h2>项目图片</h2><div class="gallery">${project.gallery.map(item => `<figure><img src="${escape(item.image)}" alt="${escape(item.alt)}" loading="lazy" referrerpolicy="no-referrer"></figure>`).join('')}</div></section>` : ''}${project.video ? `<section class="video-section"><h2>演示视频</h2>${ext(project.video, icon('play') + '观看视频', 'button button-light')}</section>` : ''}</div><aside class="detail-aside"><div class="aside-card"><h2>原作品</h2>${demo ? '<span class="button button-disabled" aria-disabled="true">示例 · 无实际作品链接</span>' : ext(project.repository, '查看原作品', 'button button-primary')}</div></aside></div></div>`;
-  return shell({ config, content, title: project.name, description: project.summary, prefix, demo, canonicalPath: 'projects/' + encodeURIComponent(project.slug) + '/' });
+  const ui = messages(config), prefix = '../../', assetPrefix = (isEnglish(config) ? '../' : '') + prefix, link = external(config);
+  const category = CATEGORIES.find(c => c.id === project.category), sharing = project.category === 'duck-life';
+  const images = project.gallery?.length ? `<section><h2>${ui.photos}</h2><div class="gallery">${project.gallery.map(item => `<figure><img src="${escape(item.image)}" alt="${escape(item.alt)}" loading="lazy" referrerpolicy="no-referrer"></figure>`).join('')}</div></section>` : '';
+  const video = project.video ? `<section class="video-section"><h2>${ui.video}</h2>${link(project.video,icon('play') + ui.watch,'button button-light')}</section>` : '';
+  const heading = `<div class="project-category">${escape(categoryLabel(config,category))}${demo ? `<span class="demo-tag-inline">${ui.fictional}</span>` : ''}</div><h1>${escape(project.name)}</h1>${project.author ? `<p class="project-credit">${escape(project.author.name)}</p>` : ''}<div class="prose">${paragraphs(project.description)}</div>`;
+  const content = sharing
+    ? `<div class="container detail"><a class="back-link" href="../../?category=duck-life#explore">${icon('back')}${ui.backDucks}</a><div class="duck-detail">${heading}${project.image ? `<figure class="duck-detail-cover">${thumbnail(project,assetPrefix)}</figure>` : ''}${images}<div class="duck-detail-actions">${project.video ? link(project.video,icon('play') + ui.watch,'button button-primary') : ''}${project.repository && !demo ? link(project.repository,ui.related,'button button-light') : ''}</div></div></div>`
+    : `<div class="container detail"><a class="back-link" href="../../#explore">${icon('back')}${ui.backProjects}</a><div class="detail-layout"><div class="detail-main">${heading}<div class="detail-cover">${thumbnail(project,assetPrefix)}</div>${images}${video}</div><aside class="detail-aside"><div class="aside-card"><h2>${ui.original}</h2>${demo ? `<span class="button button-disabled" aria-disabled="true">${ui.noOriginal}</span>` : link(project.repository,ui.viewOriginal,'button button-primary')}</div></aside></div></div>`;
+  return shell({config,content,title:project.name,description:project.summary,prefix,demo,canonicalPath:'projects/'+encodeURIComponent(project.slug)+'/'});
 }
 
 export function contribute(config, template, demo = false, agentPrompt = '', duckTemplate = '') {
-  const repo = 'https://github.com/' + config.repository;
-  const form = repo + '/issues/new?template=share-project.yml';
-  const content = `<div class="container guide"><a class="back-link" href="../#explore">${icon('back')} 返回作品</a><div class="guide-heading"><p class="eyebrow">SHARE YOUR PROJECT</p><h1><span class="marker">分享作品</span></h1><p>写介绍、放图片、贴链接即可。</p></div>
-  <section class="submission-start"><div class="submission-main"><h2>直接填表投稿</h2><p>MakerWorld、GitHub 或其他平台的作品都可以。登录 GitHub 后填写表单，由维护者审核收录。</p>${ext(form, '填写投稿表单', 'button button-primary')}</div><aside class="aside-card"><h2>准备这些资料</h2><ul class="requirements"><li>名称和所属板块</li><li>原作品链接</li><li>项目说明和图片</li><li>视频链接（可选）</li></ul></aside></section>
-  <section class="submission-duck" id="duck-life"><div><h2>晒晒小鸭</h2><p>分享照片或视频，写几句介绍。不需要作品链接或代码仓库。</p>${ext(repo + '/issues/new?template=share-duck.yml', '晒我的小鸭', 'button button-primary')}</div><details class="template-details"><summary>查看小鸭分享模板</summary><div class="code-block"><div class="code-heading"><span>小鸭分享</span><button type="button" data-copy="duck-template" aria-label="复制小鸭分享模板">${icon('copy')}<span aria-live="polite">复制模板</span></button></div><pre><code id="duck-template">${escape(duckTemplate)}</code></pre></div></details></section>
-  <section class="submission-agent" id="agent"><h2>用 AI Agent 投稿</h2><p>复制提示词，连同介绍、图片或视频发给你的 Agent。</p><div class="agent-actions"><button type="button" class="button button-primary" data-copy="agent-prompt" aria-label="复制 Agent 提示词">${icon('copy')}<span aria-live="polite">复制提示词</span></button><a class="text-link" href="../templates/agent-submission-prompt.md" download>下载提示词 ${icon('arrow')}</a></div><details class="template-details"><summary>查看完整提示词</summary><div class="code-block"><pre><code id="agent-prompt">${escape(agentPrompt)}</code></pre></div></details></section>
-  <section class="submission-template"><h2>简单投稿模板</h2><div class="code-block"><div class="code-heading"><span>项目说明</span><button type="button" data-copy="project-template" aria-label="复制投稿模板">${icon('copy')}<span aria-live="polite">复制模板</span></button></div><pre><code id="project-template" data-template>${escape(template)}</code></pre></div><a class="text-link" href="../templates/project-template.md" download>下载模板 ${icon('arrow')}</a>
-  <details class="template-details"><summary>也可以通过 PR 投稿</summary><div class="pr-instructions"><ol><li>在社区仓库中，网页新建 <code>projects/你的作品名.md</code>。</li><li>粘贴上面的模板，填好介绍、图片和链接。</li><li>按 GitHub 提示提交 Pull Request，合并后自动展示。</li></ol><p>GitHub 可能提示创建社区仓库的副本。只想分享作品，可以直接用上面的投稿表单。</p>${ext(repo + '/new/' + config.branch + '/projects', '网页新建介绍', 'button button-light')}</div></details></section></div>`;
-  return shell({ config, content, title: '分享作品', prefix: '../', demo, canonicalPath: 'contribute/' });
+  const ui = messages(config), en = isEnglish(config), link = external(config), repo = 'https://github.com/'+config.repository;
+  const templateRoot = en ? '../../templates/' : '../templates/', suffix = en ? '-en' : '';
+  const form = repo+'/issues/new?template=share-project'+suffix+'.yml';
+  const content = `<div class="container guide"><a class="back-link" href="../#explore">${icon('back')}${ui.backProjects}</a><div class="guide-heading"><p class="eyebrow">SHARE YOUR PROJECT</p><h1><span class="marker">${ui.shareHeading}</span></h1><p>${ui.shareIntro}</p></div>
+<section class="submission-start"><div class="submission-main"><h2>${ui.formHeading}</h2><p>${ui.formIntro}</p>${link(form,ui.formButton,'button button-primary')}</div><aside class="aside-card"><h2>${ui.prepare}</h2><ul class="requirements">${[ui.nameCategory,ui.projectLink,ui.descriptionImages,ui.optionalVideo].map(value=>`<li>${value}</li>`).join('')}</ul></aside></section>
+<section class="submission-duck" id="duck-life"><h2>${ui.duckHeading}</h2><p>${ui.duckIntro}</p>${link(repo+'/issues/new?template=share-duck'+suffix+'.yml',ui.shareDuck,'button button-primary')}<details class="template-details"><summary>${ui.duckTemplate}</summary><div class="code-block"><div class="code-heading"><span>${ui.duckTemplateLabel}</span><button type="button" data-copy="duck-template">${icon('copy')}<span aria-live="polite">${ui.copyTemplate}</span></button></div><pre><code id="duck-template">${escape(duckTemplate)}</code></pre></div></details></section>
+<section class="submission-agent" id="agent"><h2>${ui.agentHeading}</h2><p>${ui.agentIntro}</p><div class="agent-actions"><button type="button" class="button button-primary" data-copy="agent-prompt">${icon('copy')}<span aria-live="polite">${ui.copyPrompt}</span></button><a class="text-link" href="${templateRoot}agent-submission-prompt${suffix}.md" download>${ui.downloadPrompt}</a></div><details class="template-details"><summary>${ui.fullPrompt}</summary><div class="code-block"><pre><code id="agent-prompt">${escape(agentPrompt)}</code></pre></div></details></section>
+<section class="submission-template"><h2>${ui.templateHeading}</h2><div class="code-block"><div class="code-heading"><span>${ui.description}</span><button type="button" data-copy="project-template" aria-label="${en ? 'Copy submission template' : '复制投稿模板'}">${icon('copy')}<span aria-live="polite">${ui.copyTemplate}</span></button></div><pre><code id="project-template">${escape(template)}</code></pre></div><a class="text-link" href="${templateRoot}project-template${suffix}.md" download>${ui.downloadTemplate}</a>
+<details class="template-details"><summary>${ui.prHeading}</summary><div class="pr-instructions"><ol><li>${ui.prStepOne} <code>projects/${en ? 'your-project' : '你的作品名'}.md</code>.</li><li>${ui.prStepTwo}</li><li>${ui.prStepThree}</li></ol><p>${ui.prNote}</p>${link(repo+'/new/'+config.branch+'/projects',ui.newFile,'button button-light')}</div></details></section></div>`;
+  return shell({config,content,title:ui.shareHeading,prefix:'../',demo,canonicalPath:'contribute/'});
 }
 
 export function notFound(config, demo = false) {
-  // Relative links work from the Pages project root and from arbitrary missing paths.
-  const content = `<div class="container empty-state error-page"><span class="error-code mono">404</span><h1>页面不存在</h1><a class="button button-primary" href="${escape(config.siteUrl)}">返回首页 ${icon('arrow')}</a></div>`;
-  return shell({ config, content, title: '页面未找到', prefix: new URL(config.siteUrl).pathname, demo, canonicalPath: '404.html' });
+  const ui = messages(config), prefix = new URL(config.siteUrl).pathname + (isEnglish(config) ? 'en/' : '');
+  const content = `<div class="container empty-state error-page"><span class="error-code mono">404</span><h1>${ui.notFound}</h1><a class="button button-primary" href="${prefix}">${ui.returnHome}</a></div>`;
+  return shell({config,content,title:ui.notFound,prefix,demo,canonicalPath:'404.html'});
 }

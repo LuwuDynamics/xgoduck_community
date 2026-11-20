@@ -1,0 +1,52 @@
+name: Share a project (English)
+description: Submit in English or Chinese. No separate code repository is required.
+title: "[Project] "
+body:
+  - type: markdown
+    attributes:
+      value: Projects on MakerWorld, GitHub and other platforms are welcome. Your description will be published in its original language after review.
+  - type: input
+    id: project-name
+    attributes:
+      label: Project name
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Structure
+        - Firmware
+        - Motion models
+        - Audio & video
+    validations:
+      required: true
+  - type: input
+    id: project-url
+    attributes:
+      label: Project URL
+      description: Link to your project on MakerWorld, GitHub or another platform.
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Briefly explain your project. English or Chinese is fine; no translation is required.
+    validations:
+      required: true
+  - type: textarea
+    id: images
+    attributes:
+      label: Images
+      description: Drag images here to upload, or paste image links. Up to 7 images; the first is the cover.
+    validations:
+      required: false
+  - type: input
+    id: video
+    attributes:
+      label: Video URL
+      description: Optional. Link to a video on Bilibili, YouTube or another platform.
+    validations:
+      required: false

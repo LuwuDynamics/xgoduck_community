@@ -26,6 +26,7 @@ jobs:
       - name: Check and build (no dependencies)
         run: |
           node --test
+          node --check website/public/assets/app.js
           node scripts/build.mjs
           node scripts/check-build.mjs
           node scripts/check-links.mjs

@@ -4,6 +4,10 @@
 
 [社区作品](https://luwudynamics.github.io/xgoduck_community/) · [填表投稿](https://github.com/LuwuDynamics/xgoduck_community/issues/new?template=share-project.yml) · [社区讨论](https://github.com/LuwuDynamics/xgoduck_community/discussions)
 
+[English website](https://luwudynamics.github.io/xgoduck_community/en/) · [Submission guide in English](CONTRIBUTING.en.md)
+
+界面可切换中文与 English。投稿内容任选中文或英文，按原文展示，不要求双语，不代译。English and Chinese submissions are welcome; project content is displayed as submitted, without translation.
+
 分享 XGO-Duck 的作品介绍、图片和视频。原作品可以放在 MakerWorld、GitHub 或其他平台，由作者自己维护。
 
 ## 分享作品

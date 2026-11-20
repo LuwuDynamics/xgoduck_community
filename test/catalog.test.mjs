@@ -37,6 +37,42 @@ test('Issue form attachment HTML and empty optional responses can be copied dire
   assert.equal(parseProject(submission({图片:'_No response_'}), '项目').image, undefined);
 });
 
+test('English submissions and category names keep the authors original content', () => {
+  const source = '### Project name\nWheel build\n\n### Category\nStructure\n\n### Project URL\nhttps://makerworld.com/en/models/123\n\n### Description\nA printable wheel build. 保留原文，不代译。\n\n### Images\n\n### Video URL\n\n### Author\nMaker Name';
+  const project = parseProject(source,'wheel-build');
+  assert.equal(project.name,'Wheel build');
+  assert.equal(project.description,'A printable wheel build. 保留原文，不代译。');
+  assert.equal(project.author.name,'Maker Name');
+  assert.equal(project.category,'structure');
+  for (const [label,id] of [['Firmware','firmware'],['Motion models','motion-model'],['Audio & video','av-interaction']]) {
+    assert.equal(parseProject(source.replace('Structure',label),'build').category,id);
+  }
+  const share = parseProject('### Share title\nMy duck\n### Category\nDuck showcase\n### Description\nMy duck enjoying the day.\n### Images\n### Video URL\nhttps://www.bilibili.com/video/BV1BBad6iELy','my-duck');
+  assert.equal(share.category,'duck-life');
+  assert.equal(share.repository,undefined);
+});
+
+test('English UI and language links preserve project text and use the English forms', async () => {
+  const config = {...await loadConfig(),locale:'en'};
+  const project = parseProject(submission({项目名称:'原文标题 Original title',项目说明:'这是作者的原文。 Original description.'}),'我的轮足');
+  const homepage = home(config,[project]);
+  const page = detail(config,project);
+  assert.match(homepage,/<html lang="en"/);
+  assert.match(homepage,/Community projects/);
+  assert.match(homepage,/Duck showcase/);
+  for (const html of [homepage,page]) {
+    assert.match(html,/原文标题 Original title/);
+    assert.match(html,/这是作者的原文。 Original description./);
+  }
+  assert.match(page,/Back to projects/);
+  assert.match(page,/href="\.\.\/\.\.\/\.\.\/projects\//);
+  assert.match(page,/src="\.\.\/\.\.\/\.\.\/assets\/app.js"/);
+  const form = contribute(config,'### Project name','', 'Agent prompt', '### Share title');
+  assert.match(form,/template=share-project-en.yml/);
+  assert.match(form,/template=share-duck-en.yml/);
+  assert.match(form,/project-template-en.md/);
+});
+
 test('duck shares accept photos or video and appear beside the four project categories', async () => {
   const config = await loadConfig();
   const photo = parseProject(submission({项目名称:'小鸭出门',所属板块:'晒晒小鸭',作品链接:''}).replace('### 项目名称','### 分享标题').replace('### 项目说明','### 分享说明'), '小鸭出门');
@@ -73,11 +109,13 @@ test('removing a source file clears its card, detail, index and sitemap on the n
     const build = () => execFileSync(process.execPath,['scripts/build.mjs'],{cwd:root,stdio:'pipe',windowsHide:true});
     build();
     await access(path.join(root,'dist/projects/removal-check/index.html'));
+    await access(path.join(root,'dist/en/projects/removal-check/index.html'));
     assert.match(await readFile(path.join(root,'dist/index.html'),'utf8'),/removal-check/);
     await rm(path.join(root,'projects/removal-check.md'));
     build();
     await assert.rejects(access(path.join(root,'dist/projects/removal-check/index.html')), /ENOENT/);
-    for (const file of ['index.html','showcase/index.html','projects.json','sitemap.xml']) {
+    await assert.rejects(access(path.join(root,'dist/en/projects/removal-check/index.html')), /ENOENT/);
+    for (const file of ['index.html','showcase/index.html','en/index.html','en/showcase/index.html','projects.json','sitemap.xml']) {
       assert.doesNotMatch(await readFile(path.join(root,'dist',file),'utf8'),/removal-check/);
     }
   } finally { await rm(root,{recursive:true,force:true}); }

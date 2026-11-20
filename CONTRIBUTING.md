@@ -1,5 +1,9 @@
 # 分享你的作品
 
+[English submission guide](CONTRIBUTING.en.md)
+
+中文或英文任选一种即可，不要求双语，也不代译。切换网站界面语言不会翻译作品内容。
+
 ## 直接填表，推荐
 
 打开[投稿表单](https://github.com/LuwuDynamics/xgoduck_community/issues/new?template=share-project.yml)，填写：

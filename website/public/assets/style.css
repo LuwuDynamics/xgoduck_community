@@ -52,6 +52,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .brand-sub { font-size: 10px; line-height: 1; font-weight: 650; letter-spacing: 2.3px; }
 .header-inner nav { display: flex; align-items: center; gap: 32px; font-size: 14px; font-weight: 600; }
 .header-inner nav a { display: inline-flex; align-items: center; min-height: 44px; }
+.language-switch { border: 1px solid #b9c3aa; border-radius: 5px; padding: 7px 12px; white-space: nowrap; }
+html[lang="en"] .directory-intro h1 { font-size: clamp(38px, 4.6vw, 58px); }
 .github-nav { display: inline-flex; align-items: center; justify-content: center; gap: 24px; min-height: 48px !important; padding: 11px 19px; border-radius: 5px; background: var(--ink); color: white; }
 .github-nav:hover { color: white; background: #494a42; }
 .github-nav .icon { width: 17px; height: 17px; }
@@ -191,6 +193,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .intro-action .button { min-height: 50px; padding-inline: 20px; gap: 20px; }
 }
 @media (max-width: 640px) {
+  .header-inner .github-nav { display: none !important; }
   html { scroll-padding-top: 82px; }
   .container { padding-inline: 22px; }
   .header-inner { min-height: 78px; gap: 20px; }

@@ -1,0 +1,49 @@
+name: Share your duck (English)
+description: Share photos or a video. No project link or code repository is required.
+title: "[Duck showcase] "
+body:
+  - type: markdown
+    attributes:
+      value: Use English or Chinese. Your content stays in its original language. Include at least one image or a video link for review.
+  - type: input
+    id: title
+    attributes:
+      label: Share title
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Duck showcase
+      default: 0
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+    validations:
+      required: true
+  - type: textarea
+    id: images
+    attributes:
+      label: Images
+      description: Drag images here to upload, or paste image links. Up to 7 images; optional if you include a video.
+    validations:
+      required: false
+  - type: input
+    id: video
+    attributes:
+      label: Video URL
+      description: Optional if you include images.
+    validations:
+      required: false
+  - type: input
+    id: author
+    attributes:
+      label: Author
+      description: Optional. Your display name.
+    validations:
+      required: false
