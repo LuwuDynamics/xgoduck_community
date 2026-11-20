@@ -95,7 +95,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .project-card:hover { border-color: #748960; }
 .project-cover { display: block; position: relative; overflow: hidden; aspect-ratio: 16 / 9; border-bottom: 1px solid #d0d8c5; background: var(--paper); color: #4a563b; }
 .project-art, .project-cover .duck-art { display: block; width: 100%; height: 100%; object-fit: contain; }
-.project-cover img { width: 100%; height: 100%; object-fit: cover; }
+.project-cover img { width: 100%; height: 100%; object-fit: contain; }
 .demo-tag { position: absolute; top: 14px; right: 14px; padding: 1px 7px; border: 1px solid #bac5aa; border-radius: 4px; background: var(--paper); font-size: 12px; font-weight: 600; color: #46553a; }
 .project-body { display: flex; flex-direction: column; flex: 1; padding: 16px 18px 0; }
 .project-category { display: flex; align-items: center; gap: 8px; color: #4b5c37; font-size: 14px; font-weight: 650; }
