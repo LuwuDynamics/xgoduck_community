@@ -5,7 +5,7 @@ import { execFileSync } from 'node:child_process';
 import os from 'node:os';
 import path from 'node:path';
 import { ROOT, parseProject, loadProjects, publicUrl, loadConfig } from '../scripts/lib/catalog.mjs';
-import { isPublicIP } from '../scripts/lib/links.mjs';
+import { isPublicIP, checkBuiltLink } from '../scripts/lib/links.mjs';
 import { home, showcase, detail, contribute } from '../website/templates.mjs';
 
 function submission(fields = {}) {
@@ -133,6 +133,20 @@ test('duplicate projects are detected across Markdown files', async () => {
 test('link checker only permits public network addresses', () => {
   for (const ip of ['127.0.0.1','10.0.0.1','169.254.169.254','192.168.1.2','100.64.0.1','::1','::ffff:127.0.0.1','fc00::1','fe80::1','2001:db8::1']) assert.equal(isPublicIP(ip),false,ip);
   for (const ip of ['8.8.8.8','1.1.1.1','2606:4700:4700::1111']) assert.equal(isPublicIP(ip),true,ip);
+});
+
+test('new site images are checked before deployment while missing and escaping paths fail', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(),'duck-site-assets-'));
+  assert.ok(path.resolve(root).startsWith(path.resolve(os.tmpdir())+path.sep));
+  try {
+    await mkdir(path.join(root,'media'));
+    await writeFile(path.join(root,'media/cover.png'),'fixture');
+    const options = {siteUrl:'https://luwudynamics.github.io/xgoduck_community/',directory:root};
+    assert.equal((await checkBuiltLink(options.siteUrl+'media/cover.png',options)).state,'ok');
+    assert.equal((await checkBuiltLink(options.siteUrl+'media/missing.png',options)).state,'error');
+    assert.equal((await checkBuiltLink(options.siteUrl+'%2e%2e%2foutside.png',options)).state,'error');
+    assert.equal(await checkBuiltLink('https://www.bilibili.com/video/BV1BBad6iELy',options),null);
+  } finally { await rm(root,{recursive:true,force:true}); }
 });
 
 test('project text stays escaped and Chinese filenames produce valid links', async () => {
