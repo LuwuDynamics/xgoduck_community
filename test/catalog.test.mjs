@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, writeFile, rm, cp, readFile, access } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
 import os from 'node:os';
 import path from 'node:path';
-import { parseProject, loadProjects, publicUrl, loadConfig } from '../scripts/lib/catalog.mjs';
+import { ROOT, parseProject, loadProjects, publicUrl, loadConfig } from '../scripts/lib/catalog.mjs';
 import { isPublicIP } from '../scripts/lib/links.mjs';
 import { home, showcase, detail, contribute } from '../website/templates.mjs';
 
@@ -36,7 +37,7 @@ test('Issue form attachment HTML and empty optional responses can be copied dire
   assert.equal(parseProject(submission({图片:'_No response_'}), '项目').image, undefined);
 });
 
-test('duck shares accept photos or video without a project repository and stay out of technical filters', async () => {
+test('duck shares accept photos or video and appear beside the four project categories', async () => {
   const config = await loadConfig();
   const photo = parseProject(submission({项目名称:'小鸭出门',所属板块:'晒晒小鸭',作品链接:''}).replace('### 项目名称','### 分享标题').replace('### 项目说明','### 分享说明'), '小鸭出门');
   assert.equal(photo.category, 'duck-life');
@@ -49,11 +50,50 @@ test('duck shares accept photos or video without a project repository and stay o
   assert.match(detail(config,video), /观看视频/);
   assert.doesNotMatch(detail(config,video), /原作品|detail-cover/);
   const page = home(config,[photo]);
-  const directory = page.slice(page.indexOf('<section id="explore"'), page.indexOf('<section class="duck-section'));
-  assert.doesNotMatch(directory, /小鸭出门|data-category-filter="duck-life"/);
-  assert.match(page, /id="duck-life"/);
+  assert.match(page, /data-category-filter="duck-life"/);
+  assert.match(page, /data-count>01/);
+  assert.match(page, /data-category="duck-life"/);
+  assert.doesNotMatch(page, /duck-section|进入专区/);
+  const legacyPage = showcase(config,[photo,parseProject(submission(),'轮足')]);
+  assert.match(legacyPage, /data-default-category="duck-life"/);
+  assert.match(legacyPage, /data-category="structure"[^>]* hidden/);
   assert.throws(() => parseProject(submission({所属板块:'晒晒小鸭',作品链接:'',图片:'',视频链接:''}), '小鸭'), /至少/);
   assert.throws(() => parseProject(submission({所属板块:'晒晒小鸭',作品链接:'javascript:alert(1)'}), '小鸭'), /作品链接/);
+});
+
+test('each live entry has a prefilled removal request and an authenticated GitHub delete link', async () => {
+  const config = await loadConfig();
+  const project = {...parseProject(submission(), '我的轮足'), source_file: '我的轮足.MD'};
+  const page = detail(config,project);
+  assert.match(page, /管理收录/);
+  assert.match(page, new RegExp('/delete/main/projects/'+encodeURIComponent('我的轮足.MD')));
+  const href = page.match(/href="([^"]+template=remove-project.yml[^"]*)"/)[1].replaceAll('&amp;','&');
+  const request = new URL(href);
+  assert.equal(request.searchParams.get('entry-name'),project.name);
+  assert.equal(request.searchParams.get('entry-url'),config.siteUrl+'projects/'+encodeURIComponent(project.slug)+'/');
+  assert.doesNotMatch(detail(config,project,true), /删除收录|申请下架/);
+});
+
+test('removing a source file clears its card, detail, index and sitemap on the next build', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(),'duck-delete-build-'));
+  assert.ok(path.resolve(root).startsWith(path.resolve(os.tmpdir())+path.sep));
+  try {
+    for (const entry of ['scripts','website','docs','.github','site.config.json']) {
+      await cp(path.join(ROOT,entry),path.join(root,entry),{recursive:true});
+    }
+    await mkdir(path.join(root,'projects'));
+    await writeFile(path.join(root,'projects/removal-check.md'),submission());
+    const build = () => execFileSync(process.execPath,['scripts/build.mjs'],{cwd:root,stdio:'pipe',windowsHide:true});
+    build();
+    await access(path.join(root,'dist/projects/removal-check/index.html'));
+    assert.match(await readFile(path.join(root,'dist/index.html'),'utf8'),/removal-check/);
+    await rm(path.join(root,'projects/removal-check.md'));
+    build();
+    await assert.rejects(access(path.join(root,'dist/projects/removal-check/index.html')), /ENOENT/);
+    for (const file of ['index.html','showcase/index.html','projects.json','sitemap.xml']) {
+      assert.doesNotMatch(await readFile(path.join(root,'dist',file),'utf8'),/removal-check/);
+    }
+  } finally { await rm(root,{recursive:true,force:true}); }
 });
 
 test('photo-only shares load together and duplicate media is rejected', async () => {

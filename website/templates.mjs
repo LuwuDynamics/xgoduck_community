@@ -69,7 +69,7 @@ ${demo ? '<meta name="robots" content="noindex,nofollow">' : `<link rel="canonic
 <script src="${prefix}assets/app.js" defer></script></head>
 <body><a class="skip-link" href="#main">跳至内容</a>
 <header class="site-header"><div class="container header-inner"><a class="brand" href="${prefix}" aria-label="XGO-Duck Community 首页"><span class="brand-name">XGO-DUCK<span class="brand-dot" aria-hidden="true">●</span></span><span class="brand-sub">COMMUNITY</span></a>
-<nav aria-label="主导航"><a class="nav-explore" href="${prefix}#explore">社区项目</a><a href="${prefix}showcase/">晒晒小鸭</a><a href="${prefix}contribute/">投稿指南</a>${ext(repo, '<span>GitHub</span>', 'github-nav')}</nav></div></header>
+<nav aria-label="主导航"><a class="nav-explore" href="${prefix}#explore">社区作品</a><a href="${prefix}contribute/">投稿指南</a>${ext(repo, '<span>GitHub</span>', 'github-nav')}</nav></div></header>
 ${demo ? '<div class="container demo-notice"><span class="status-dot"></span> 演示预览 · 以下项目均为虚构示例</div>' : ''}
 <main id="main">${content}</main>
 <footer class="site-footer"><div class="container footer-inner"><div><a class="footer-brand" href="${prefix}">XGO-DUCK<span class="brand-dot" aria-hidden="true">●</span><span class="footer-community">COMMUNITY</span></a><p>第三方项目由原作者独立维护。</p></div><div class="footer-links">${ext(`${repo}/discussions`, '社区讨论')}${ext(repo, 'GitHub')}</div></div></footer>
@@ -88,49 +88,55 @@ function platformName(url) {
   return host;
 }
 
-function projectCard(project, demo, prefix = './') {
+function projectCard(project, demo, prefix = './', hidden = false) {
   const category = categoryFor(project);
   const sharing = project.category === 'duck-life';
   const projectPath = prefix + 'projects/' + encodeURIComponent(project.slug) + '/';
   const search = [project.name, project.description, project.author?.name ?? '', category.label, platformName(project.repository)].join(' ');
-  return `<article class="project-card${sharing ? ' duck-card' : ''}" data-project data-category="${project.category}" data-search="${escape(search.toLowerCase())}">
+  return `<article class="project-card${sharing ? ' duck-card' : ''}" data-project data-category="${project.category}" data-search="${escape(search.toLowerCase())}"${hidden ? ' hidden' : ''}>
     <a class="project-cover" href="${projectPath}" aria-label="查看 ${escape(project.name)} 的详情">${project.image ? thumbnail(project, prefix) : sharing ? `<div class="video-cover">${icon('play')}<span>视频分享</span></div>` : thumbnail(project, prefix)}${demo ? '<span class="demo-tag">演示项目</span>' : ''}</a>
     <div class="project-body"><div class="project-category">${category.label}</div><h3><a href="${projectPath}">${escape(project.name)}</a></h3><p class="project-summary">${escape(project.summary)}</p>
     <div class="project-meta"><span>${escape(project.author?.name ?? platformName(project.repository))}</span>${demo || sharing ? `<a href="${projectPath}">${sharing ? '查看分享' : '查看详情'}</a>` : ext(project.repository, '查看作品')}</div></div></article>`;
 }
 
-export function home(config, projects, demo = false) {
-  const shares = projects.filter(p => p.category === 'duck-life');
-  projects = projects.filter(p => p.category !== 'duck-life');
-  const content = `<section class="directory-intro container"><div><p class="eyebrow">XGO-DUCK COMMUNITY</p><h1><span class="marker">社区作品</span></h1></div><div class="intro-action"><p>分享 MakerWorld、GitHub 等平台的作品。</p><a class="button button-primary" href="./contribute/">提交作品 ${icon('external')}</a></div></section>
-  <section id="explore" class="directory-surface" aria-labelledby="projects-heading"><div class="explore container"><div class="section-heading"><h2 id="projects-heading">项目目录 <span class="count-label" data-count>${String(projects.length).padStart(2, '0')}</span></h2></div>
-  <div class="explore-controls" data-enhanced hidden><div class="filter-row" role="group" aria-label="按项目类别筛选"><button class="filter active" data-category-filter="all" aria-pressed="true">全部</button>${CATEGORIES.filter(c => c.id !== 'duck-life').map(c => `<button class="filter" data-category-filter="${c.id}" aria-pressed="false">${c.label}</button>`).join('')}</div>
+export function home(config, projects, demo = false, { prefix = './', initialCategory = 'all', title } = {}) {
+  const visible = projects.filter(p => initialCategory === 'all' || p.category === initialCategory);
+  const filters = [{ id: 'all', label: '全部' }, ...CATEGORIES];
+  const content = `<section class="directory-intro container"><div><p class="eyebrow">XGO-DUCK COMMUNITY</p><h1><span class="marker">社区作品</span></h1></div><div class="intro-action"><p>分享项目，也晒晒你的小鸭。</p><a class="button button-primary" href="${prefix}contribute/">提交作品</a></div></section>
+  <section id="explore" class="directory-surface" aria-labelledby="projects-heading"><div class="explore container"><div class="section-heading"><h2 id="projects-heading">作品目录 <span class="count-label" data-count>${String(visible.length).padStart(2, '0')}</span></h2></div>
+  <div class="explore-controls" data-enhanced hidden><div class="filter-row" role="group" aria-label="按作品类别筛选">${filters.map(c => `<button class="filter${c.id === initialCategory ? ' active' : ''}" data-category-filter="${c.id}" aria-pressed="${c.id === initialCategory}">${c.label}</button>`).join('')}</div>
   <div class="search-row"><div class="search-input">${icon('search')}<label class="sr-only" for="search">搜索作品、作者、关键词</label><input id="search" type="search" placeholder="搜索作品、作者、关键词…" autocomplete="off" maxlength="150"><kbd>/</kbd></div></div></div>
-  <p class="sr-only" role="status" aria-live="polite" data-results>${projects.length} 个项目</p>
-  <div class="project-grid" data-grid>${projects.map(p => projectCard(p, demo)).join('')}</div>
-  <div class="empty-state" data-empty ${projects.length ? 'hidden' : ''}><h3 data-empty-title>暂无作品</h3><p data-empty-description>提交介绍、图片和作品链接即可。</p><a class="button button-primary" href="./contribute/">提交作品 ${icon('external')}</a><button class="text-link" type="button" data-reset hidden>清除筛选 ${icon('back')}</button></div></div></section>
-  <section class="duck-section container" id="duck-life" aria-labelledby="duck-heading"><div class="duck-section-heading"><div><h2 id="duck-heading">晒晒小鸭</h2><p>照片、日常，还有你的小鸭子。</p></div><a class="button button-light" href="./showcase/">进入专区</a></div>${shares.length ? `<div class="project-grid">${shares.slice(0, 4).map(p => projectCard(p, demo)).join('')}</div>` : duckEmpty('./')}</section>`;
-  return shell({ config, content, demo });
-}
-
-function duckEmpty(prefix) {
-  return `<div class="duck-empty"><div class="duck-empty-art">${duckArt()}</div><div><h3>第一只小鸭，等你来晒</h3><p>发张照片，或分享一段视频。</p><a class="button button-primary" href="${prefix}contribute/#duck-life">晒我的小鸭</a></div></div>`;
+  <p class="sr-only" role="status" aria-live="polite" data-results>${visible.length} 个作品</p>
+  <div class="project-grid" data-grid data-default-category="${initialCategory}">${projects.map(p => projectCard(p, demo, prefix, initialCategory !== 'all' && p.category !== initialCategory)).join('')}</div>
+  <div class="empty-state" data-empty ${visible.length ? 'hidden' : ''}><h3 data-empty-title>暂无作品</h3><p data-empty-description>分享项目或小鸭日常，等待审核收录。</p><a class="button button-primary" href="${prefix}contribute/">提交作品</a><button class="text-link" type="button" data-reset hidden>清除筛选</button></div></div></section>`;
+  return shell({ config, content, demo, prefix, title });
 }
 
 export function showcase(config, projects, demo = false) {
-  const shares = projects.filter(p => p.category === 'duck-life');
-  const content = `<section class="container duck-section"><a class="back-link" href="../">${icon('back')} 返回首页</a><div class="duck-section-heading duck-page-heading"><div><h1><span class="marker">晒晒小鸭</span></h1><p>照片、日常，还有你的小鸭子。</p></div><a class="button button-primary" href="../contribute/#duck-life">晒我的小鸭</a></div>${shares.length ? `<div class="project-grid">${shares.map(p => projectCard(p, demo, '../')).join('')}</div>` : duckEmpty('../')}</section>`;
-  return shell({ config, content, title: '晒晒小鸭', description: '分享你的 XGO-Duck 照片、日常与视频。', prefix: '../', demo, canonicalPath: 'showcase/' });
+  // Keep previously shared URLs working with the same catalog and selected filter.
+  return home(config, projects, demo, { prefix: '../', initialCategory: 'duck-life', title: '晒晒小鸭' });
+}
+
+function entryManagement(config, project, demo) {
+  if (demo) return '';
+  const repo = `https://github.com/${config.repository}`;
+  const sourceFile = encodeURIComponent(project.source_file ?? project.slug + '.md');
+  const request = new URL(repo + '/issues/new');
+  request.searchParams.set('template', 'remove-project.yml');
+  request.searchParams.set('title', '[下架申请] ' + project.name);
+  request.searchParams.set('entry-name', project.name);
+  request.searchParams.set('entry-url', config.siteUrl + 'projects/' + encodeURIComponent(project.slug) + '/');
+  return `<div class="entry-management">${ext(request.href, '申请下架', 'text-link')}<details class="entry-admin"><summary>管理收录</summary><div class="entry-admin-body"><p>供社区维护者使用。删除提交生效后，网站自动移除本条收录。</p><div class="entry-admin-actions">${ext(repo + '/edit/' + config.branch + '/projects/' + sourceFile, '编辑收录', 'text-link')}${ext(repo + '/delete/' + config.branch + '/projects/' + sourceFile, '删除收录', 'text-link delete-link')}</div></div></details></div>`;
 }
 
 export function detail(config, project, demo = false) {
   const prefix = '../../';
   const category = categoryFor(project);
   if (project.category === 'duck-life') {
-    const content = `<div class="container detail"><a class="back-link" href="../../showcase/">${icon('back')} 返回晒晒小鸭</a><div class="duck-detail"><div class="project-category">晒晒小鸭${demo ? '<span class="demo-tag-inline">虚构示例</span>' : ''}</div><h1>${escape(project.name)}</h1>${project.author ? `<p class="project-credit">${escape(project.author.name)}</p>` : ''}<div class="prose">${paragraphs(project.description)}</div>${project.image ? `<figure class="duck-detail-cover">${thumbnail(project, prefix)}</figure>` : ''}${project.gallery?.length ? `<div class="gallery duck-detail-gallery">${project.gallery.map(item => `<figure><img src="${escape(item.image)}" alt="${escape(item.alt)}" loading="lazy" referrerpolicy="no-referrer"></figure>`).join('')}</div>` : ''}<div class="duck-detail-actions">${project.video ? ext(project.video, icon('play') + '观看视频', 'button button-primary') : ''}${project.repository && !demo ? ext(project.repository, '相关链接', 'button button-light') : ''}</div></div></div>`;
+    const content = `<div class="container detail"><a class="back-link" href="../../?category=duck-life#explore">${icon('back')} 返回晒晒小鸭</a><div class="duck-detail"><div class="project-category">晒晒小鸭${demo ? '<span class="demo-tag-inline">虚构示例</span>' : ''}</div><h1>${escape(project.name)}</h1>${project.author ? `<p class="project-credit">${escape(project.author.name)}</p>` : ''}<div class="prose">${paragraphs(project.description)}</div>${project.image ? `<figure class="duck-detail-cover">${thumbnail(project, prefix)}</figure>` : ''}${project.gallery?.length ? `<div class="gallery duck-detail-gallery">${project.gallery.map(item => `<figure><img src="${escape(item.image)}" alt="${escape(item.alt)}" loading="lazy" referrerpolicy="no-referrer"></figure>`).join('')}</div>` : ''}<div class="duck-detail-actions">${project.video ? ext(project.video, icon('play') + '观看视频', 'button button-primary') : ''}${project.repository && !demo ? ext(project.repository, '相关链接', 'button button-light') : ''}</div>${entryManagement(config, project, demo)}</div></div>`;
     return shell({ config, content, title: project.name, description: project.summary, prefix, demo, canonicalPath: 'projects/' + encodeURIComponent(project.slug) + '/' });
   }
-  const content = `<div class="container detail"><a class="back-link" href="../../#explore">${icon('back')} 返回作品</a><div class="detail-layout"><div class="detail-main"><div class="project-category">${category.label}${demo ? '<span class="demo-tag-inline">虚构示例</span>' : ''}</div><h1>${escape(project.name)}</h1>${project.author ? `<p class="project-credit">作者：${escape(project.author.name)}</p>` : ''}<div class="prose">${paragraphs(project.description)}</div><div class="detail-cover">${thumbnail(project, prefix)}</div>${project.gallery?.length ? `<section><h2>项目图片</h2><div class="gallery">${project.gallery.map(item => `<figure><img src="${escape(item.image)}" alt="${escape(item.alt)}" loading="lazy" referrerpolicy="no-referrer"></figure>`).join('')}</div></section>` : ''}${project.video ? `<section class="video-section"><h2>演示视频</h2>${ext(project.video, icon('play') + '观看视频', 'button button-light')}</section>` : ''}</div><aside class="detail-aside"><div class="aside-card"><h2>原作品</h2>${demo ? '<span class="button button-disabled" aria-disabled="true">示例 · 无实际作品链接</span>' : ext(project.repository, '查看原作品', 'button button-primary')}</div></aside></div></div>`;
+  const content = `<div class="container detail"><a class="back-link" href="../../#explore">${icon('back')} 返回作品</a><div class="detail-layout"><div class="detail-main"><div class="project-category">${category.label}${demo ? '<span class="demo-tag-inline">虚构示例</span>' : ''}</div><h1>${escape(project.name)}</h1>${project.author ? `<p class="project-credit">作者：${escape(project.author.name)}</p>` : ''}<div class="prose">${paragraphs(project.description)}</div><div class="detail-cover">${thumbnail(project, prefix)}</div>${project.gallery?.length ? `<section><h2>项目图片</h2><div class="gallery">${project.gallery.map(item => `<figure><img src="${escape(item.image)}" alt="${escape(item.alt)}" loading="lazy" referrerpolicy="no-referrer"></figure>`).join('')}</div></section>` : ''}${project.video ? `<section class="video-section"><h2>演示视频</h2>${ext(project.video, icon('play') + '观看视频', 'button button-light')}</section>` : ''}</div><aside class="detail-aside"><div class="aside-card"><h2>原作品</h2>${demo ? '<span class="button button-disabled" aria-disabled="true">示例 · 无实际作品链接</span>' : ext(project.repository, '查看原作品', 'button button-primary')}</div></aside></div>${entryManagement(config, project, demo)}</div>`;
   return shell({ config, content, title: project.name, description: project.summary, prefix, demo, canonicalPath: 'projects/' + encodeURIComponent(project.slug) + '/' });
 }
 

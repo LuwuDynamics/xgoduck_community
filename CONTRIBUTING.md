@@ -15,7 +15,7 @@ MakerWorld、GitHub 等平台都可以。无需创建自己的代码仓库、下
 
 想分享自己的小鸭照片、日常或视频，打开[小鸭分享表单](https://github.com/LuwuDynamics/xgoduck_community/issues/new?template=share-duck.yml)。填分享标题与说明，直接拖入图片上传，或粘贴视频链接。图片与视频至少提供一项，昵称可选，不需要作品链接或代码仓库。
 
-也可以复制[小鸭分享模板](docs/DUCK_SHARE_TEMPLATE.md)，在 `projects/` 新建介绍并提 PR。所属板块填「晒晒小鸭」。维护者审核收录后，这些分享会显示在独立的[晒晒小鸭专区](https://luwudynamics.github.io/xgoduck_community/showcase/)。
+也可以复制[小鸭分享模板](docs/DUCK_SHARE_TEMPLATE.md)，在 `projects/` 新建介绍并提 PR。所属板块填「晒晒小鸭」。维护者审核收录后，这些分享会与其他分类一起显示在[作品目录](https://luwudynamics.github.io/xgoduck_community/?category=duck-life#explore)。
 
 ## 使用 AI Agent
 
@@ -37,4 +37,6 @@ GitHub 可能提示创建社区仓库的副本，用来提交 PR；原作品仍�
 
 ## 更新或下架
 
-在原投稿下留言说明，或提交 PR 修改、删除相应介绍即可。作品本身的下载和问题反馈保留在原平台。
+在作品详情页点击「申请下架」，表单会自动填写作品名称和社区展示链接。补充原因后提交，由维护者审核处理。也可以在原投稿下留言，或提 PR 修改、删除相应介绍。
+
+社区维护者可在详情页展开「管理收录」，选择「编辑收录」或「删除收录」，登录 GitHub 后提交更改。删除进入主分支并部署后，网站移除卡片和详情页。原平台的作品不受影响。

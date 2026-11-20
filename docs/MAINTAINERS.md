@@ -23,9 +23,19 @@
 
 每份 Markdown 使用六个三级标题：项目名称、所属板块、作品链接、项目说明、图片、视频链接。前四项必填，图片与视频可留空。可选添加「作者」三级标题署名。
 
-四个技术板块：结构、整机固件、动作模型、音视频交互；另有独立的「晒晒小鸭」。项目文件名可以用中文或英文，也支持空格、数字、下划线和连字符，最多 80 字符。
+五个并列分类：结构、整机固件、动作模型、音视频交互、晒晒小鸭。项目文件名可以用中文或英文，也支持空格、数字、下划线和连字符，最多 80 字符。
 
 图片可直接复制 GitHub 附件的 Markdown 或 HTML 标签，构建程序只读取其中的 HTTPS 图片链接，不执行 HTML。说明作为纯文本展示。不要放入私人信息、访问令牌、模型权重或固件包。
+
+## 删除或下架收录
+
+每个正式作品详情页提供「申请下架」，提交到 `.github/ISSUE_TEMPLATE/remove-project.yml` 表单，并自动带入作品名称和展示地址。需要核对作者或申请原因时，在该 Issue 中沟通。
+
+维护者展开作品详情页的「管理收录」，点击「删除收录」，会打开 GitHub 对应介绍文件的删除页面。确认文件后提交更改，或提 PR 待合并。GitHub 负责验证权限；普通访客不能直接删除正式收录。
+
+删除 `projects/对应作品.md` 进入 `main`、部署成功后，首页卡片、分类结果、详情页、JSON 索引和 sitemap 都会移除。构建会清空旧输出，避免残留详情页。删除只影响社区索引，原作品和视频仍在原平台。
+
+误删时可从 Git 历史恢复该文件并重新提交。不要用关闭投稿 Issue 代替删除文件。
 
 ## 构建与部署
 
@@ -52,6 +62,7 @@ GitHub Pages 的 Source 使用 GitHub Actions；部署目录为 `dist/`。`dist-
 - 样式与浏览器脚本：`website/public/assets/`。
 - 投稿表单：`.github/ISSUE_TEMPLATE/share-project.yml`。
 - 小鸭分享表单：`.github/ISSUE_TEMPLATE/share-duck.yml`；模板：`docs/DUCK_SHARE_TEMPLATE.md`。
+- 下架申请表单：`.github/ISSUE_TEMPLATE/remove-project.yml`。
 - 投稿与 PR 模板：`.github/pull_request_template.md`，网站复制和下载使用同一文件。
 - Agent 投稿提示词：`docs/AGENT_SUBMISSION_PROMPT.md`，投稿页与下载文件由同一份内容生成。
 

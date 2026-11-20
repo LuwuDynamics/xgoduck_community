@@ -12,7 +12,8 @@ if (grid) {
   function readLocation() {
     const params = new URLSearchParams(location.search);
     search.value = (params.get('q') ?? '').slice(0, 150);
-    category = buttons.some(b => b.dataset.categoryFilter === params.get('category')) ? params.get('category') : 'all';
+    const requested = params.get('category') ?? grid.dataset.defaultCategory ?? 'all';
+    category = buttons.some(b => b.dataset.categoryFilter === requested) ? requested : 'all';
   }
   function update(save = true) {
     const words = search.value.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
@@ -36,7 +37,7 @@ if (grid) {
     if (save) {
       const params = new URLSearchParams();
       if (search.value.trim()) params.set('q', search.value.trim());
-      if (category !== 'all') params.set('category', category);
+      if (category !== 'all' || grid.dataset.defaultCategory !== 'all') params.set('category', category);
       history.replaceState(null, '', location.pathname + (params.size ? '?' + params : '') + location.hash);
     }
   }

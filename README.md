@@ -1,6 +1,6 @@
 # XGO-Duck Community
 
-结构 · 整机固件 · 动作模型 · 音视频交互
+结构 · 整机固件 · 动作模型 · 音视频交互 · 晒晒小鸭
 
 [社区作品](https://luwudynamics.github.io/xgoduck_community/) · [填表投稿](https://github.com/LuwuDynamics/xgoduck_community/issues/new?template=share-project.yml) · [社区讨论](https://github.com/LuwuDynamics/xgoduck_community/discussions)
 
@@ -16,7 +16,7 @@ MakerWorld 作者不需要另外建立代码仓库，也不需要安装任何软
 
 使用 AI Agent 的作者可直接复制 [Agent 投稿提示词](docs/AGENT_SUBMISSION_PROMPT.md)，或在[投稿页](https://luwudynamics.github.io/xgoduck_community/contribute/#agent)一键复制。提供作品链接与现有资料，Agent 即可帮助整理介绍并投稿。
 
-## 四个板块
+## 作品分类
 
 | 板块 | 内容 |
 | --- | --- |
@@ -24,10 +24,11 @@ MakerWorld 作者不需要另外建立代码仓库，也不需要安装任何软
 | 整机固件 | 整机运行与控制固件 |
 | 动作模型 | 运动策略、训练与模型 |
 | 音视频交互 | 视觉、语音、音频与视频交互 |
+| 晒晒小鸭 | 小鸭照片、日常与视频 |
 
 ## 晒晒小鸭
 
-[晒晒小鸭专区](https://luwudynamics.github.io/xgoduck_community/showcase/)分享你的小鸭照片、日常与视频，独立于技术项目目录。打开[小鸭分享表单](https://github.com/LuwuDynamics/xgoduck_community/issues/new?template=share-duck.yml)，填标题、简短介绍，拖入图片或粘贴视频链接即可。照片与视频至少提供一项，不需要作品链接或代码仓库。维护者审核收录后才会出现在网站。
+[晒晒小鸭](https://luwudynamics.github.io/xgoduck_community/?category=duck-life#explore)与其他分类并列展示。打开[小鸭分享表单](https://github.com/LuwuDynamics/xgoduck_community/issues/new?template=share-duck.yml)，填标题、简短介绍，拖入图片或粘贴视频链接即可。照片与视频至少提供一项，不需要作品链接或代码仓库。维护者审核收录后才会出现在网站。
 
 ## 网站维护
 
@@ -55,6 +56,6 @@ node scripts/serve.mjs --build --watch --demo
 
 ## 项目维护与责任边界
 
-社区仓库保存作品介绍和展示链接。下载、安装和问题反馈请到原作品页面。更新或下架可以在原投稿中说明，也可以提交 PR 修改或删除相应 Markdown 文件。
+社区仓库保存作品介绍和展示链接。下载、安装和问题反馈请到原作品页面。每个详情页提供「申请下架」，维护者可展开「管理收录」编辑或删除相应介绍。删除提交部署后，作品从目录、详情页和索引中移除；原平台的内容不受影响。
 
 维护者审核步骤见 [docs/MAINTAINERS.md](docs/MAINTAINERS.md)。

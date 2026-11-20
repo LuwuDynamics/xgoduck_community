@@ -66,8 +66,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .text-link:hover { text-decoration: underline; }
 .text-link .icon { width: 17px; height: 17px; }
 
-.directory-intro { display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; padding-top: 54px; padding-bottom: 64px; }
-.directory-intro h1 { margin-top: 14px; font-size: clamp(54px, 6.6vw, 82px); font-weight: 800; line-height: 1.3; letter-spacing: -.05em; }
+.directory-intro { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; padding-top: 32px; padding-bottom: 38px; }
+.directory-intro h1 { margin-top: 10px; font-size: clamp(42px, 5vw, 60px); font-weight: 800; line-height: 1.3; letter-spacing: -.05em; }
 .marker { position: relative; isolation: isolate; display: inline-block; }
 .marker::after { position: absolute; z-index: -1; content: ""; left: -.02em; right: -.035em; bottom: .13em; height: .2em; background: var(--yellow); transform: rotate(-1.5deg); }
 .intro-action { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; padding-bottom: 6px; }
@@ -90,18 +90,18 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .search-input input:focus-visible { outline: none; }
 .search-input input::placeholder { color: #58604f; opacity: 1; }
 .search-input kbd { border: 1px solid #bac5aa; border-radius: 3px; width: 24px; height: 24px; text-align: center; font-size: 13px; line-height: 22px; color: #4b5840; }
-.project-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-.project-card { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border: 1px solid #c2cdb4; border-radius: 12px; background: var(--paper); transition: border-color .15s; }
+.project-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start; }
+.project-card { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border: 1px solid #c2cdb4; border-radius: 10px; background: var(--paper); transition: border-color .15s; }
 .project-card:hover { border-color: #748960; }
-.project-cover { display: block; position: relative; overflow: hidden; aspect-ratio: 1.9; border-bottom: 1px solid #d0d8c5; background: var(--paper); color: #4a563b; }
+.project-cover { display: block; position: relative; overflow: hidden; aspect-ratio: 16 / 9; border-bottom: 1px solid #d0d8c5; background: var(--paper); color: #4a563b; }
 .project-art, .project-cover .duck-art { display: block; width: 100%; height: 100%; object-fit: contain; }
 .project-cover img { width: 100%; height: 100%; object-fit: cover; }
 .demo-tag { position: absolute; top: 14px; right: 14px; padding: 1px 7px; border: 1px solid #bac5aa; border-radius: 4px; background: var(--paper); font-size: 12px; font-weight: 600; color: #46553a; }
-.project-body { display: flex; flex-direction: column; flex: 1; padding: 22px 22px 0; }
+.project-body { display: flex; flex-direction: column; flex: 1; padding: 16px 18px 0; }
 .project-category { display: flex; align-items: center; gap: 8px; color: #4b5c37; font-size: 14px; font-weight: 650; }
-.project-body h3 { margin: 10px 0 14px; font-size: 24px; line-height: 1.35; letter-spacing: -.035em; overflow-wrap: anywhere; }
-.project-summary { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 56px; font-size: 16px; font-weight: 500; line-height: 1.75; color: #424b39; }
-.project-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 24px; border-top: 1px solid #d0d8c5; padding: 8px 0; font-size: 14px; color: #4c5741; }
+.project-body h3 { margin: 8px 0 10px; font-size: 20px; line-height: 1.4; letter-spacing: -.025em; overflow-wrap: anywhere; }
+.project-summary { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 52px; font-size: 16px; font-weight: 500; line-height: 1.65; color: #424b39; }
+.project-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; border-top: 1px solid #d0d8c5; padding: 4px 0; font-size: 14px; color: #4c5741; }
 .project-meta > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .project-meta a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 650; color: var(--ink); white-space: nowrap; }
 .project-meta a:hover { text-decoration: underline; text-underline-offset: 4px; }
@@ -171,14 +171,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 @media (max-width: 1100px) {
   .container { padding-inline: 36px; }
   .header-inner nav { gap: 25px; }
-  .directory-intro h1 { font-size: 70px; }
+  .directory-intro h1 { font-size: 56px; }
   .detail-layout { grid-template-columns: minmax(0, 1fr) 270px; gap: 36px; }
   .detail-main h1 { font-size: 40px; }
   .project-body { padding-inline: 19px; }
 }
 @media (max-width: 1020px) {
   .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .directory-intro { padding-top: 44px; padding-bottom: 52px; }
+  .directory-intro { padding-top: 30px; padding-bottom: 34px; }
   .guide-heading h1 { font-size: 58px; }
 }
 @media (max-width: 800px) {
@@ -187,7 +187,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .detail-aside .button { width: auto; }
   .search-row { flex-wrap: wrap; }
   .search-input { flex-basis: 100%; }
-  .directory-intro h1 { font-size: 62px; }
+  .directory-intro h1 { font-size: 50px; }
   .intro-action .button { min-height: 50px; padding-inline: 20px; gap: 20px; }
 }
 @media (max-width: 640px) {
@@ -202,7 +202,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .github-nav .icon { width: 15px; height: 15px; }
   .demo-notice { padding-top: 13px; font-size: 12px; }
   .directory-intro { align-items: flex-start; flex-direction: column; gap: 25px; padding-top: 34px; padding-bottom: 38px; }
-  .directory-intro h1 { font-size: 58px; margin-top: 11px; }
+  .directory-intro h1 { font-size: 46px; margin-top: 10px; }
   .eyebrow { font-size: 12px; }
   .intro-action { gap: 15px; padding-bottom: 0; }
   .intro-action p { font-size: 16px; }
@@ -218,11 +218,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .search-input input { padding-block: 12px; font-size: 16px; }
   .search-input kbd { display: none; }
   .project-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-  .project-cover { aspect-ratio: 1.65; }
-  .project-body { padding: 22px 22px 0; }
-  .project-body h3 { font-size: 26px; }
+  .project-cover { aspect-ratio: 16 / 9; }
+  .project-body { padding: 16px 18px 0; }
+  .project-body h3 { font-size: 20px; }
   .project-summary { min-height: 0; font-size: 16px; }
-  .project-meta { margin-top: 23px; font-size: 14px; }
+  .project-meta { margin-top: 16px; font-size: 14px; }
   .footer-inner { flex-direction: column; align-items: flex-start; gap: 18px; padding-top: 32px; padding-bottom: 29px; }
   .footer-links { gap: 28px; }
   .empty-state { min-height: 290px; padding: 32px 18px; }
@@ -249,7 +249,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .header-inner nav { gap: 13px; }
   .brand-name { font-size: 21px; }
   .github-nav { gap: 7px; padding-inline: 10px; }
-  .directory-intro h1 { font-size: 51px; }
+  .directory-intro h1 { font-size: 42px; }
   .filter { padding-inline: 10px; }
   .project-body { padding-inline: 18px; }
 }
@@ -276,21 +276,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .pr-instructions p { font-size: 15px; color: #4f5548; margin-bottom: 20px; }
 .pr-instructions code { overflow-wrap: anywhere; }
 .project-credit { font-size: 15px; margin-bottom: 18px; }
-.duck-section { padding-top: 48px; padding-bottom: 64px; }
-.duck-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 28px; margin-bottom: 30px; }
-.duck-section-heading h2 { font-size: 32px; letter-spacing: -.04em; }
-.duck-section-heading p { margin-top: 10px; font-size: 16px; color: #454c3e; }
-.duck-page-heading h1 { font-size: clamp(42px, 6vw, 64px); letter-spacing: -.05em; }
-.duck-empty { display: flex; align-items: center; justify-content: center; gap: 32px; min-height: 280px; padding: 28px; border: 1px solid #d4ceb9; border-radius: 12px; background: #eeeadd; }
-.duck-empty-art { width: 280px; color: #4a503d; flex-shrink: 0; }
-.duck-empty-art svg { display: block; }
-.duck-empty h3 { margin-bottom: 10px; font-size: 26px; }
-.duck-empty p { margin-bottom: 24px; color: #454c3e; font-size: 16px; }
-.duck-card .project-cover { aspect-ratio: 4 / 3; background: #eeeadd; }
-.duck-card .project-cover img { object-fit: contain; }
+.duck-card .project-cover { background: #eeeadd; }
 .video-cover { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; height: 100%; font-size: 16px; font-weight: 600; }
 .video-cover .icon { width: 48px; height: 48px; }
-.duck-detail { max-width: 960px; margin-inline: auto; }
+.duck-detail { max-width: 800px; margin-inline: auto; }
 .duck-detail h1 { margin-block: 14px 20px; font-size: clamp(32px, 4vw, 46px); letter-spacing: -.04em; overflow-wrap: anywhere; }
 .duck-detail-cover { margin: 28px 0; }
 .duck-detail-cover img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; }
@@ -298,14 +287,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .submission-duck { max-width: 840px; margin-top: 36px; padding: 28px; border: 1px solid #d4ceb9; border-radius: 8px; background: #eeeadd; scroll-margin-top: 110px; }
 .submission-duck h2 { margin-bottom: 14px; font-size: 28px; letter-spacing: -.035em; }
 .submission-duck p { margin-bottom: 22px; color: #3e4636; font-size: 16px; }
+.entry-management { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 12px 28px; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); }
+.entry-management > .text-link, .entry-admin summary { font-size: 14px; color: #4f5548; }
+.entry-admin summary { display: list-item; min-height: 44px; padding-block: 10px; cursor: pointer; font-weight: 600; }
+.entry-admin-body { padding: 8px 0; max-width: 460px; }
+.entry-admin-body p { font-size: 14px; }
+.entry-admin-actions { display: flex; flex-wrap: wrap; gap: 24px; }
+.entry-admin-actions .delete-link { color: #873f31; }
 @media (max-width: 640px) {
-  .header-inner .github-nav { display: none !important; }
-  .duck-section { padding-top: 30px; padding-bottom: 40px; }
-  .duck-section-heading { align-items: flex-start; flex-direction: column; gap: 20px; }
-  .duck-section-heading h2 { font-size: 28px; }
-  .duck-empty { flex-direction: column; gap: 0; padding: 20px 22px 30px; align-items: flex-start; }
-  .duck-empty-art { width: 240px; max-width: 100%; align-self: center; }
-  .duck-empty h3 { font-size: 23px; }
   .submission-duck { padding: 22px; }
   .submission-duck h2 { font-size: 25px; }
 }
