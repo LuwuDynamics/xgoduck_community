@@ -61,19 +61,6 @@ test('duck shares accept photos or video and appear beside the four project cate
   assert.throws(() => parseProject(submission({所属板块:'晒晒小鸭',作品链接:'javascript:alert(1)'}), '小鸭'), /作品链接/);
 });
 
-test('each live entry has a prefilled removal request and an authenticated GitHub delete link', async () => {
-  const config = await loadConfig();
-  const project = {...parseProject(submission(), '我的轮足'), source_file: '我的轮足.MD'};
-  const page = detail(config,project);
-  assert.match(page, /管理收录/);
-  assert.match(page, new RegExp('/delete/main/projects/'+encodeURIComponent('我的轮足.MD')));
-  const href = page.match(/href="([^"]+template=remove-project.yml[^"]*)"/)[1].replaceAll('&amp;','&');
-  const request = new URL(href);
-  assert.equal(request.searchParams.get('entry-name'),project.name);
-  assert.equal(request.searchParams.get('entry-url'),config.siteUrl+'projects/'+encodeURIComponent(project.slug)+'/');
-  assert.doesNotMatch(detail(config,project,true), /删除收录|申请下架/);
-});
-
 test('removing a source file clears its card, detail, index and sitemap on the next build', async () => {
   const root = await mkdtemp(path.join(os.tmpdir(),'duck-delete-build-'));
   assert.ok(path.resolve(root).startsWith(path.resolve(os.tmpdir())+path.sep));

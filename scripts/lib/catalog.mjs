@@ -91,7 +91,7 @@ export async function loadProjects({ root = ROOT, directory = 'projects' } = {})
         if (repositories.has(canonical)) throw new Error('作品链接重复，请更新原条目');
         repositories.add(canonical);
       }
-      slugs.add(key); projects.push({ ...project, source_file: entry.name });
+      slugs.add(key); projects.push(project);
     } catch (error) { errors.push(`${entry.name}: ${error.message}`); }
   }
   if (errors.length) throw new Error(errors.join('\n'));

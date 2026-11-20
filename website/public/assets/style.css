@@ -287,13 +287,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .submission-duck { max-width: 840px; margin-top: 36px; padding: 28px; border: 1px solid #d4ceb9; border-radius: 8px; background: #eeeadd; scroll-margin-top: 110px; }
 .submission-duck h2 { margin-bottom: 14px; font-size: 28px; letter-spacing: -.035em; }
 .submission-duck p { margin-bottom: 22px; color: #3e4636; font-size: 16px; }
-.entry-management { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 12px 28px; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); }
-.entry-management > .text-link, .entry-admin summary { font-size: 14px; color: #4f5548; }
-.entry-admin summary { display: list-item; min-height: 44px; padding-block: 10px; cursor: pointer; font-weight: 600; }
-.entry-admin-body { padding: 8px 0; max-width: 460px; }
-.entry-admin-body p { font-size: 14px; }
-.entry-admin-actions { display: flex; flex-wrap: wrap; gap: 24px; }
-.entry-admin-actions .delete-link { color: #873f31; }
 @media (max-width: 640px) {
   .submission-duck { padding: 22px; }
   .submission-duck h2 { font-size: 25px; }
