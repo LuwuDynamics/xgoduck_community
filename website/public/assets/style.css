@@ -276,6 +276,39 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .pr-instructions p { font-size: 15px; color: #4f5548; margin-bottom: 20px; }
 .pr-instructions code { overflow-wrap: anywhere; }
 .project-credit { font-size: 15px; margin-bottom: 18px; }
+.duck-section { padding-top: 48px; padding-bottom: 64px; }
+.duck-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 28px; margin-bottom: 30px; }
+.duck-section-heading h2 { font-size: 32px; letter-spacing: -.04em; }
+.duck-section-heading p { margin-top: 10px; font-size: 16px; color: #454c3e; }
+.duck-page-heading h1 { font-size: clamp(42px, 6vw, 64px); letter-spacing: -.05em; }
+.duck-empty { display: flex; align-items: center; justify-content: center; gap: 32px; min-height: 280px; padding: 28px; border: 1px solid #d4ceb9; border-radius: 12px; background: #eeeadd; }
+.duck-empty-art { width: 280px; color: #4a503d; flex-shrink: 0; }
+.duck-empty-art svg { display: block; }
+.duck-empty h3 { margin-bottom: 10px; font-size: 26px; }
+.duck-empty p { margin-bottom: 24px; color: #454c3e; font-size: 16px; }
+.duck-card .project-cover { aspect-ratio: 4 / 3; background: #eeeadd; }
+.duck-card .project-cover img { object-fit: contain; }
+.video-cover { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; height: 100%; font-size: 16px; font-weight: 600; }
+.video-cover .icon { width: 48px; height: 48px; }
+.duck-detail { max-width: 960px; margin-inline: auto; }
+.duck-detail h1 { margin-block: 14px 20px; font-size: clamp(32px, 4vw, 46px); letter-spacing: -.04em; overflow-wrap: anywhere; }
+.duck-detail-cover { margin: 28px 0; }
+.duck-detail-cover img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; }
+.duck-detail-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 28px; }
+.submission-duck { max-width: 840px; margin-top: 36px; padding: 28px; border: 1px solid #d4ceb9; border-radius: 8px; background: #eeeadd; scroll-margin-top: 110px; }
+.submission-duck h2 { margin-bottom: 14px; font-size: 28px; letter-spacing: -.035em; }
+.submission-duck p { margin-bottom: 22px; color: #3e4636; font-size: 16px; }
+@media (max-width: 640px) {
+  .header-inner .github-nav { display: none !important; }
+  .duck-section { padding-top: 30px; padding-bottom: 40px; }
+  .duck-section-heading { align-items: flex-start; flex-direction: column; gap: 20px; }
+  .duck-section-heading h2 { font-size: 28px; }
+  .duck-empty { flex-direction: column; gap: 0; padding: 20px 22px 30px; align-items: flex-start; }
+  .duck-empty-art { width: 240px; max-width: 100%; align-self: center; }
+  .duck-empty h3 { font-size: 23px; }
+  .submission-duck { padding: 22px; }
+  .submission-duck h2 { font-size: 25px; }
+}
 @media (max-width: 800px) { .submission-start { grid-template-columns: minmax(0, 1fr); gap: 24px; } }
 @media (max-width: 640px) {
   .submission-main { padding: 22px; }

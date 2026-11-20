@@ -69,7 +69,7 @@ ${demo ? '<meta name="robots" content="noindex,nofollow">' : `<link rel="canonic
 <script src="${prefix}assets/app.js" defer></script></head>
 <body><a class="skip-link" href="#main">跳至内容</a>
 <header class="site-header"><div class="container header-inner"><a class="brand" href="${prefix}" aria-label="XGO-Duck Community 首页"><span class="brand-name">XGO-DUCK<span class="brand-dot" aria-hidden="true">●</span></span><span class="brand-sub">COMMUNITY</span></a>
-<nav aria-label="主导航"><a class="nav-explore" href="${prefix}#explore">社区项目</a><a href="${prefix}contribute/">投稿指南</a>${ext(repo, '<span>GitHub</span>', 'github-nav')}</nav></div></header>
+<nav aria-label="主导航"><a class="nav-explore" href="${prefix}#explore">社区项目</a><a href="${prefix}showcase/">晒晒小鸭</a><a href="${prefix}contribute/">投稿指南</a>${ext(repo, '<span>GitHub</span>', 'github-nav')}</nav></div></header>
 ${demo ? '<div class="container demo-notice"><span class="status-dot"></span> 演示预览 · 以下项目均为虚构示例</div>' : ''}
 <main id="main">${content}</main>
 <footer class="site-footer"><div class="container footer-inner"><div><a class="footer-brand" href="${prefix}">XGO-DUCK<span class="brand-dot" aria-hidden="true">●</span><span class="footer-community">COMMUNITY</span></a><p>第三方项目由原作者独立维护。</p></div><div class="footer-links">${ext(`${repo}/discussions`, '社区讨论')}${ext(repo, 'GitHub')}</div></div></footer>
@@ -81,46 +81,66 @@ function thumbnail(project, prefix = './') {
 }
 
 function platformName(url) {
+  if (!url) return '鸭友分享';
   const host = new URL(url).hostname;
   if (host === 'makerworld.com' || host.endsWith('.makerworld.com')) return 'MakerWorld';
   if (host === 'github.com') return 'GitHub';
   return host;
 }
 
-function projectCard(project, demo) {
+function projectCard(project, demo, prefix = './') {
   const category = categoryFor(project);
-  const projectPath = './projects/' + encodeURIComponent(project.slug) + '/';
+  const sharing = project.category === 'duck-life';
+  const projectPath = prefix + 'projects/' + encodeURIComponent(project.slug) + '/';
   const search = [project.name, project.description, project.author?.name ?? '', category.label, platformName(project.repository)].join(' ');
-  return `<article class="project-card" data-project data-category="${project.category}" data-search="${escape(search.toLowerCase())}">
-    <a class="project-cover" href="${projectPath}" aria-label="查看 ${escape(project.name)} 的详情">${thumbnail(project)}${demo ? '<span class="demo-tag">演示项目</span>' : ''}</a>
+  return `<article class="project-card${sharing ? ' duck-card' : ''}" data-project data-category="${project.category}" data-search="${escape(search.toLowerCase())}">
+    <a class="project-cover" href="${projectPath}" aria-label="查看 ${escape(project.name)} 的详情">${project.image ? thumbnail(project, prefix) : sharing ? `<div class="video-cover">${icon('play')}<span>视频分享</span></div>` : thumbnail(project, prefix)}${demo ? '<span class="demo-tag">演示项目</span>' : ''}</a>
     <div class="project-body"><div class="project-category">${category.label}</div><h3><a href="${projectPath}">${escape(project.name)}</a></h3><p class="project-summary">${escape(project.summary)}</p>
-    <div class="project-meta"><span>${escape(project.author?.name ?? platformName(project.repository))}</span>${demo ? `<a href="${projectPath}">查看详情 ${icon('external')}</a>` : ext(project.repository, '查看作品')}</div></div></article>`;
+    <div class="project-meta"><span>${escape(project.author?.name ?? platformName(project.repository))}</span>${demo || sharing ? `<a href="${projectPath}">${sharing ? '查看分享' : '查看详情'}</a>` : ext(project.repository, '查看作品')}</div></div></article>`;
 }
 
 export function home(config, projects, demo = false) {
+  const shares = projects.filter(p => p.category === 'duck-life');
+  projects = projects.filter(p => p.category !== 'duck-life');
   const content = `<section class="directory-intro container"><div><p class="eyebrow">XGO-DUCK COMMUNITY</p><h1><span class="marker">社区作品</span></h1></div><div class="intro-action"><p>分享 MakerWorld、GitHub 等平台的作品。</p><a class="button button-primary" href="./contribute/">提交作品 ${icon('external')}</a></div></section>
   <section id="explore" class="directory-surface" aria-labelledby="projects-heading"><div class="explore container"><div class="section-heading"><h2 id="projects-heading">项目目录 <span class="count-label" data-count>${String(projects.length).padStart(2, '0')}</span></h2></div>
-  <div class="explore-controls" data-enhanced hidden><div class="filter-row" role="group" aria-label="按项目类别筛选"><button class="filter active" data-category-filter="all" aria-pressed="true">全部</button>${CATEGORIES.map(c => `<button class="filter" data-category-filter="${c.id}" aria-pressed="false">${c.label}</button>`).join('')}</div>
+  <div class="explore-controls" data-enhanced hidden><div class="filter-row" role="group" aria-label="按项目类别筛选"><button class="filter active" data-category-filter="all" aria-pressed="true">全部</button>${CATEGORIES.filter(c => c.id !== 'duck-life').map(c => `<button class="filter" data-category-filter="${c.id}" aria-pressed="false">${c.label}</button>`).join('')}</div>
   <div class="search-row"><div class="search-input">${icon('search')}<label class="sr-only" for="search">搜索作品、作者、关键词</label><input id="search" type="search" placeholder="搜索作品、作者、关键词…" autocomplete="off" maxlength="150"><kbd>/</kbd></div></div></div>
   <p class="sr-only" role="status" aria-live="polite" data-results>${projects.length} 个项目</p>
   <div class="project-grid" data-grid>${projects.map(p => projectCard(p, demo)).join('')}</div>
-  <div class="empty-state" data-empty ${projects.length ? 'hidden' : ''}><h3 data-empty-title>暂无作品</h3><p data-empty-description>提交介绍、图片和作品链接即可。</p><a class="button button-primary" href="./contribute/">提交作品 ${icon('external')}</a><button class="text-link" type="button" data-reset hidden>清除筛选 ${icon('back')}</button></div></div></section>`;
+  <div class="empty-state" data-empty ${projects.length ? 'hidden' : ''}><h3 data-empty-title>暂无作品</h3><p data-empty-description>提交介绍、图片和作品链接即可。</p><a class="button button-primary" href="./contribute/">提交作品 ${icon('external')}</a><button class="text-link" type="button" data-reset hidden>清除筛选 ${icon('back')}</button></div></div></section>
+  <section class="duck-section container" id="duck-life" aria-labelledby="duck-heading"><div class="duck-section-heading"><div><h2 id="duck-heading">晒晒小鸭</h2><p>照片、日常，还有你的小鸭子。</p></div><a class="button button-light" href="./showcase/">进入专区</a></div>${shares.length ? `<div class="project-grid">${shares.slice(0, 4).map(p => projectCard(p, demo)).join('')}</div>` : duckEmpty('./')}</section>`;
   return shell({ config, content, demo });
+}
+
+function duckEmpty(prefix) {
+  return `<div class="duck-empty"><div class="duck-empty-art">${duckArt()}</div><div><h3>第一只小鸭，等你来晒</h3><p>发张照片，或分享一段视频。</p><a class="button button-primary" href="${prefix}contribute/#duck-life">晒我的小鸭</a></div></div>`;
+}
+
+export function showcase(config, projects, demo = false) {
+  const shares = projects.filter(p => p.category === 'duck-life');
+  const content = `<section class="container duck-section"><a class="back-link" href="../">${icon('back')} 返回首页</a><div class="duck-section-heading duck-page-heading"><div><h1><span class="marker">晒晒小鸭</span></h1><p>照片、日常，还有你的小鸭子。</p></div><a class="button button-primary" href="../contribute/#duck-life">晒我的小鸭</a></div>${shares.length ? `<div class="project-grid">${shares.map(p => projectCard(p, demo, '../')).join('')}</div>` : duckEmpty('../')}</section>`;
+  return shell({ config, content, title: '晒晒小鸭', description: '分享你的 XGO-Duck 照片、日常与视频。', prefix: '../', demo, canonicalPath: 'showcase/' });
 }
 
 export function detail(config, project, demo = false) {
   const prefix = '../../';
   const category = categoryFor(project);
+  if (project.category === 'duck-life') {
+    const content = `<div class="container detail"><a class="back-link" href="../../showcase/">${icon('back')} 返回晒晒小鸭</a><div class="duck-detail"><div class="project-category">晒晒小鸭${demo ? '<span class="demo-tag-inline">虚构示例</span>' : ''}</div><h1>${escape(project.name)}</h1>${project.author ? `<p class="project-credit">${escape(project.author.name)}</p>` : ''}<div class="prose">${paragraphs(project.description)}</div>${project.image ? `<figure class="duck-detail-cover">${thumbnail(project, prefix)}</figure>` : ''}${project.gallery?.length ? `<div class="gallery duck-detail-gallery">${project.gallery.map(item => `<figure><img src="${escape(item.image)}" alt="${escape(item.alt)}" loading="lazy" referrerpolicy="no-referrer"></figure>`).join('')}</div>` : ''}<div class="duck-detail-actions">${project.video ? ext(project.video, icon('play') + '观看视频', 'button button-primary') : ''}${project.repository && !demo ? ext(project.repository, '相关链接', 'button button-light') : ''}</div></div></div>`;
+    return shell({ config, content, title: project.name, description: project.summary, prefix, demo, canonicalPath: 'projects/' + encodeURIComponent(project.slug) + '/' });
+  }
   const content = `<div class="container detail"><a class="back-link" href="../../#explore">${icon('back')} 返回作品</a><div class="detail-layout"><div class="detail-main"><div class="project-category">${category.label}${demo ? '<span class="demo-tag-inline">虚构示例</span>' : ''}</div><h1>${escape(project.name)}</h1>${project.author ? `<p class="project-credit">作者：${escape(project.author.name)}</p>` : ''}<div class="prose">${paragraphs(project.description)}</div><div class="detail-cover">${thumbnail(project, prefix)}</div>${project.gallery?.length ? `<section><h2>项目图片</h2><div class="gallery">${project.gallery.map(item => `<figure><img src="${escape(item.image)}" alt="${escape(item.alt)}" loading="lazy" referrerpolicy="no-referrer"></figure>`).join('')}</div></section>` : ''}${project.video ? `<section class="video-section"><h2>演示视频</h2>${ext(project.video, icon('play') + '观看视频', 'button button-light')}</section>` : ''}</div><aside class="detail-aside"><div class="aside-card"><h2>原作品</h2>${demo ? '<span class="button button-disabled" aria-disabled="true">示例 · 无实际作品链接</span>' : ext(project.repository, '查看原作品', 'button button-primary')}</div></aside></div></div>`;
   return shell({ config, content, title: project.name, description: project.summary, prefix, demo, canonicalPath: 'projects/' + encodeURIComponent(project.slug) + '/' });
 }
 
-export function contribute(config, template, demo = false, agentPrompt = '') {
+export function contribute(config, template, demo = false, agentPrompt = '', duckTemplate = '') {
   const repo = 'https://github.com/' + config.repository;
   const form = repo + '/issues/new?template=share-project.yml';
   const content = `<div class="container guide"><a class="back-link" href="../#explore">${icon('back')} 返回作品</a><div class="guide-heading"><p class="eyebrow">SHARE YOUR PROJECT</p><h1><span class="marker">分享作品</span></h1><p>写介绍、放图片、贴链接即可。</p></div>
   <section class="submission-start"><div class="submission-main"><h2>直接填表投稿</h2><p>MakerWorld、GitHub 或其他平台的作品都可以。登录 GitHub 后填写表单，由维护者审核收录。</p>${ext(form, '填写投稿表单', 'button button-primary')}</div><aside class="aside-card"><h2>准备这些资料</h2><ul class="requirements"><li>名称和所属板块</li><li>原作品链接</li><li>项目说明和图片</li><li>视频链接（可选）</li></ul></aside></section>
-  <section class="submission-agent" id="agent"><h2>用 AI Agent 投稿</h2><p>复制提示词，连同作品链接和资料发给你的 Agent。</p><div class="agent-actions"><button type="button" class="button button-primary" data-copy="agent-prompt" aria-label="复制 Agent 提示词">${icon('copy')}<span aria-live="polite">复制提示词</span></button><a class="text-link" href="../templates/agent-submission-prompt.md" download>下载提示词 ${icon('arrow')}</a></div><details class="template-details"><summary>查看完整提示词</summary><div class="code-block"><pre><code id="agent-prompt">${escape(agentPrompt)}</code></pre></div></details></section>
+  <section class="submission-duck" id="duck-life"><div><h2>晒晒小鸭</h2><p>分享照片或视频，写几句介绍。不需要作品链接或代码仓库。</p>${ext(repo + '/issues/new?template=share-duck.yml', '晒我的小鸭', 'button button-primary')}</div><details class="template-details"><summary>查看小鸭分享模板</summary><div class="code-block"><div class="code-heading"><span>小鸭分享</span><button type="button" data-copy="duck-template" aria-label="复制小鸭分享模板">${icon('copy')}<span aria-live="polite">复制模板</span></button></div><pre><code id="duck-template">${escape(duckTemplate)}</code></pre></div></details></section>
+  <section class="submission-agent" id="agent"><h2>用 AI Agent 投稿</h2><p>复制提示词，连同介绍、图片或视频发给你的 Agent。</p><div class="agent-actions"><button type="button" class="button button-primary" data-copy="agent-prompt" aria-label="复制 Agent 提示词">${icon('copy')}<span aria-live="polite">复制提示词</span></button><a class="text-link" href="../templates/agent-submission-prompt.md" download>下载提示词 ${icon('arrow')}</a></div><details class="template-details"><summary>查看完整提示词</summary><div class="code-block"><pre><code id="agent-prompt">${escape(agentPrompt)}</code></pre></div></details></section>
   <section class="submission-template"><h2>简单投稿模板</h2><div class="code-block"><div class="code-heading"><span>项目说明</span><button type="button" data-copy="project-template" aria-label="复制投稿模板">${icon('copy')}<span aria-live="polite">复制模板</span></button></div><pre><code id="project-template" data-template>${escape(template)}</code></pre></div><a class="text-link" href="../templates/project-template.md" download>下载模板 ${icon('arrow')}</a>
   <details class="template-details"><summary>也可以通过 PR 投稿</summary><div class="pr-instructions"><ol><li>在社区仓库中，网页新建 <code>projects/你的作品名.md</code>。</li><li>粘贴上面的模板，填好介绍、图片和链接。</li><li>按 GitHub 提示提交 Pull Request，合并后自动展示。</li></ol><p>GitHub 可能提示创建社区仓库的副本。只想分享作品，可以直接用上面的投稿表单。</p>${ext(repo + '/new/' + config.branch + '/projects', '网页新建介绍', 'button button-light')}</div></details></section></div>`;
   return shell({ config, content, title: '分享作品', prefix: '../', demo, canonicalPath: 'contribute/' });

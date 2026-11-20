@@ -11,6 +11,12 @@
 
 MakerWorld、GitHub 等平台都可以。无需创建自己的代码仓库、下载社区仓库或安装软件。维护者会在投稿中沟通并审核收录。
 
+## 晒晒小鸭
+
+想分享自己的小鸭照片、日常或视频，打开[小鸭分享表单](https://github.com/LuwuDynamics/xgoduck_community/issues/new?template=share-duck.yml)。填分享标题与说明，直接拖入图片上传，或粘贴视频链接。图片与视频至少提供一项，昵称可选，不需要作品链接或代码仓库。
+
+也可以复制[小鸭分享模板](docs/DUCK_SHARE_TEMPLATE.md)，在 `projects/` 新建介绍并提 PR。所属板块填「晒晒小鸭」。维护者审核收录后，这些分享会显示在独立的[晒晒小鸭专区](https://luwudynamics.github.io/xgoduck_community/showcase/)。
+
 ## 使用 AI Agent
 
 复制 [Agent 投稿提示词](docs/AGENT_SUBMISSION_PROMPT.md)，填入作品链接和现有资料，发给你的 AI Agent 即可。[网页投稿页](https://luwudynamics.github.io/xgoduck_community/contribute/#agent)支持一键复制和下载。

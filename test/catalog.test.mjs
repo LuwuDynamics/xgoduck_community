@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { parseProject, loadProjects, publicUrl, loadConfig } from '../scripts/lib/catalog.mjs';
 import { isPublicIP } from '../scripts/lib/links.mjs';
-import { home, detail, contribute } from '../website/templates.mjs';
+import { home, showcase, detail, contribute } from '../website/templates.mjs';
 
 function submission(fields = {}) {
   return Object.entries({
@@ -34,6 +34,39 @@ test('Issue form attachment HTML and empty optional responses can be copied dire
   assert.equal(p.gallery.length, 1);
   assert.equal(p.video, undefined);
   assert.equal(parseProject(submission({图片:'_No response_'}), '项目').image, undefined);
+});
+
+test('duck shares accept photos or video without a project repository and stay out of technical filters', async () => {
+  const config = await loadConfig();
+  const photo = parseProject(submission({项目名称:'小鸭出门',所属板块:'晒晒小鸭',作品链接:''}).replace('### 项目名称','### 分享标题').replace('### 项目说明','### 分享说明'), '小鸭出门');
+  assert.equal(photo.category, 'duck-life');
+  assert.equal(photo.repository, undefined);
+  const video = parseProject(submission({所属板块:'晒晒小鸭',作品链接:'',图片:'_No response_',视频链接:'https://www.bilibili.com/video/BV1h5nh6dEwH'}), '轮滑鸭');
+  assert.equal(video.image, undefined);
+  assert.match(showcase(config,[photo,video]), /小鸭出门/);
+  assert.match(showcase(config,[photo,video]), /视频分享/);
+  assert.doesNotMatch(showcase(config,[photo,video]), /href="undefined"/);
+  assert.match(detail(config,video), /观看视频/);
+  assert.doesNotMatch(detail(config,video), /原作品|detail-cover/);
+  const page = home(config,[photo]);
+  const directory = page.slice(page.indexOf('<section id="explore"'), page.indexOf('<section class="duck-section'));
+  assert.doesNotMatch(directory, /小鸭出门|data-category-filter="duck-life"/);
+  assert.match(page, /id="duck-life"/);
+  assert.throws(() => parseProject(submission({所属板块:'晒晒小鸭',作品链接:'',图片:'',视频链接:''}), '小鸭'), /至少/);
+  assert.throws(() => parseProject(submission({所属板块:'晒晒小鸭',作品链接:'javascript:alert(1)'}), '小鸭'), /作品链接/);
+});
+
+test('photo-only shares load together and duplicate media is rejected', async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(),'duck-shares-'));
+  try {
+    await mkdir(path.join(root,'projects'));
+    const first = submission({所属板块:'晒晒小鸭',作品链接:''});
+    await writeFile(path.join(root,'projects/first.md'), first);
+    await writeFile(path.join(root,'projects/second.md'), submission({所属板块:'晒晒小鸭',作品链接:'',图片:'https://github.com/user-attachments/assets/second'}));
+    assert.equal((await loadProjects({root})).length, 2);
+    await writeFile(path.join(root,'projects/second.md'), first);
+    await assert.rejects(loadProjects({root}), /重复/);
+  } finally { await rm(root,{recursive:true,force:true}); }
 });
 
 test('missing required sections, duplicate headings and unsupported categories are rejected', () => {

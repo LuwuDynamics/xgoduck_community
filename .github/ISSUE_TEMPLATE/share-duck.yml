@@ -1,0 +1,51 @@
+name: 晒晒小鸭
+description: 分享你的小鸭照片、日常和视频，不需要作品链接或代码仓库。
+title: "[晒晒小鸭] "
+body:
+  - type: markdown
+    attributes:
+      value: 分享你的小鸭子。图片可以直接拖入上传，照片和视频至少提供一项，由维护者审核收录。
+  - type: input
+    id: title
+    attributes:
+      label: 分享标题
+      placeholder: 例如：小鸭第一次出门
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: 所属板块
+      options:
+        - 晒晒小鸭
+      default: 0
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: 分享说明
+      placeholder: 简单说说你的小鸭子，或记录这次分享的故事。
+    validations:
+      required: true
+  - type: textarea
+    id: images
+    attributes:
+      label: 图片
+      description: 直接拖入图片上传，或粘贴图片链接。最多 7 张，第一张作为封面；只有视频时可留空。
+    validations:
+      required: false
+  - type: input
+    id: video
+    attributes:
+      label: 视频链接
+      description: 粘贴 B 站、YouTube 等视频链接；有图片时可留空。
+    validations:
+      required: false
+  - type: input
+    id: author
+    attributes:
+      label: 作者
+      description: 可选，填写希望展示的昵称。
+    validations:
+      required: false

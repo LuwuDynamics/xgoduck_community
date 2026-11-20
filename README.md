@@ -25,6 +25,10 @@ MakerWorld 作者不需要另外建立代码仓库，也不需要安装任何软
 | 动作模型 | 运动策略、训练与模型 |
 | 音视频交互 | 视觉、语音、音频与视频交互 |
 
+## 晒晒小鸭
+
+[晒晒小鸭专区](https://luwudynamics.github.io/xgoduck_community/showcase/)分享你的小鸭照片、日常与视频，独立于技术项目目录。打开[小鸭分享表单](https://github.com/LuwuDynamics/xgoduck_community/issues/new?template=share-duck.yml)，填标题、简短介绍，拖入图片或粘贴视频链接即可。照片与视频至少提供一项，不需要作品链接或代码仓库。维护者审核收录后才会出现在网站。
+
 ## 网站维护
 
 网站使用原生 HTML、CSS、JavaScript，构建只依赖 Node.js 22+，没有第三方依赖，也没有安装步骤。投稿人不需要运行以下命令。
